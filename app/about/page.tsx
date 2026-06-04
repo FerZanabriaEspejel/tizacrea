@@ -20,41 +20,41 @@ export default function SobreNosotrosPage() {
   const features = [
     {
       icon: Search,
-      title: "Busqueda Inteligente",
-      description: "Encuentra negocios por nombre, categoria o colonia. Nuestro buscador te ayuda a descubrir exactamente lo que necesitas."
+      title: "Búsqueda inteligente",
+      description: "Encuentra negocios por nombre, categoría o colonia. Nuestro buscador te ayuda a descubrir exactamente lo que necesitas."
     },
     {
       icon: MapPin,
-      title: "Ubicacion Precisa",
-      description: "Cada negocio incluye direccion detallada y colonia para que llegues facilmente a tu destino."
+      title: "Ubicación precisa",
+      description: "Cada negocio incluye dirección detallada y colonia para que llegues fácilmente a tu destino."
     },
     {
       icon: Store,
-      title: "Registro Gratuito",
+      title: "Registro gratuito",
       description: "Los negocios locales pueden registrarse sin costo y llegar a miles de personas en Tizayuca."
     },
     {
       icon: Star,
-      title: "Negocios Destacados",
+      title: "Negocios destacados",
       description: "Descubre los mejores lugares de la comunidad con nuestras recomendaciones destacadas."
     },
     {
       icon: TrendingUp,
-      title: "Impulsa tu Negocio",
+      title: "Impulsa tu negocio",
       description: "Aumenta tu visibilidad y atrae nuevos clientes con tu perfil en TizaCrea."
     },
     {
       icon: Shield,
-      title: "Informacion Verificada",
-      description: "Trabajamos para mantener la informacion actualizada y confiable para nuestra comunidad."
+      title: "Información verificada",
+      description: "Trabajamos para mantener la información actualizada y confiable para nuestra comunidad."
     }
   ]
 
   const stats = [
-    { number: "100+", label: "Negocios Registrados" },
-    { number: "5,000+", label: "Usuarios Mensuales" },
-    { number: "15+", label: "Categorias" },
-    { number: "20+", label: "Colonias" }
+    { number: "21+", label: "Categorias" },
+    { number: "46+", label: "Localidades" },
+    { number: "∞", label: "Oportunidades de Crecimiento" },
+    { number: "24/7", label: "Acceso a la Plataforma" }
   ]
 
   return (
@@ -69,7 +69,7 @@ export default function SobreNosotrosPage() {
             Hecho con amor en Tizayuca
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-balance">
-            Conectando a Tizayuca con sus Negocios Locales
+            Conectando a Tizayuca con sus Negocios locales
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
             TizaCrea es una plataforma digital creada para fortalecer la economia local, 
@@ -94,41 +94,83 @@ export default function SobreNosotrosPage() {
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="pb-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-border/50 bg-gradient-to-br from-primary/5 to-accent/5 overflow-hidden">
-            <CardContent className="p-8 md:p-12">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Sparkles className="w-6 h-6 text-primary" />
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground">Nuestra Mision</h2>
-              </div>
-              <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                Creemos que los negocios locales son el corazon de nuestra comunidad. TizaCrea nacio 
-                con la vision de crear un puente digital entre los emprendedores de Tizayuca y las 
-                personas que buscan productos y servicios de calidad cerca de casa.
-              </p>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                Nuestra plataforma facilita el descubrimiento de restaurantes, cafes, tiendas, 
-                servicios y mucho mas, todo en un solo lugar. Queremos que cada negocio tenga 
-                la oportunidad de crecer y prosperar en nuestra ciudad.
-              </p>
-            </CardContent>
-          </Card>
+{/* History Section */}
+<section className="pb-16 px-4">
+  <div className="max-w-4xl mx-auto">
+    <Card className="border-border/50 bg-gradient-to-br from-primary/5 to-accent/5 overflow-hidden">
+      <CardContent className="p-8 md:p-12">
+
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-primary" />
+          </div>
+
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+            Nuestra historia
+          </h2>
         </div>
-      </section>
+
+        <p className="text-muted-foreground text-lg leading-relaxed">
+          TizaCrea nació con el propósito de impulsar la presencia digital de los negocios locales de Tizayuca y facilitar a la comunidad el acceso a productos y servicios cercanos. Buscamos conectar emprendedores, comerciantes y consumidores en un mismo espacio digital, fortaleciendo la economía local y promoviendo el crecimiento de los negocios de nuestra región.
+        </p>
+
+      </CardContent>
+    </Card>
+  </div>
+</section>
+
+{/* Mission & Vision Section */}
+<section className="pb-16 px-4">
+  <div className="max-w-4xl mx-auto">
+
+    <Card className="border-border/50 bg-gradient-to-br from-primary/5 to-accent/5 overflow-hidden">
+      <CardContent className="p-8 md:p-12">
+
+        {/* MISIÓN */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-primary" />
+          </div>
+
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+            Misión
+          </h2>
+        </div>
+
+        <p className="text-muted-foreground text-lg leading-relaxed mb-10">
+          Conectar a los negocios locales de Tizayuca con la comunidad mediante una plataforma digital accesible que facilite el descubrimiento, promoción y crecimiento de productos y servicios locales.
+        </p>
+
+        {/* VISIÓN */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-primary" />
+          </div>
+
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+            Visión
+          </h2>
+        </div>
+
+        <p className="text-muted-foreground text-lg leading-relaxed">
+          Convertirnos en la plataforma digital de referencia para la promoción y fortalecimiento de los negocios locales, impulsando el desarrollo económico de Tizayuca y fomentando una comunidad más conectada y colaborativa.
+        </p>
+
+      </CardContent>
+    </Card>
+
+  </div>
+</section>
 
       {/* Features Section */}
       <section className="pb-16 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Que Ofrecemos
+              Que ofrecemos
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Funcionalidades pensadas para conectar a la comunidad con los negocios locales de manera facil y efectiva.
+              Funcionalidades pensadas para conectar a la comunidad con los negocios locales de manera fácil y efectiva.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -158,12 +200,12 @@ export default function SobreNosotrosPage() {
                 </div>
                 <div className="text-center md:text-left">
                   <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-                    Somos Comunidad
+                    Somos comunidad
                   </h2>
                   <p className="text-muted-foreground text-lg leading-relaxed">
                     TizaCrea es mas que una plataforma, es un proyecto de la comunidad para la comunidad. 
                     Cada negocio que se registra y cada persona que descubre un nuevo lugar favorito 
-                    contribuye a fortalecer nuestra economia local y a crear una Tizayuca mas conectada.
+                    contribuye a fortalecer nuestra economía local y a crear un municipio mas conectado.
                   </p>
                 </div>
               </div>
@@ -176,25 +218,48 @@ export default function SobreNosotrosPage() {
       <section className="pb-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Se Parte de TizaCrea
+            Se parte de TizaCrea
           </h2>
           <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
             Ya sea que tengas un negocio o busques descubrir nuevos lugares, te invitamos a ser parte de nuestra comunidad.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/negocios">
+            <Link href="/businesses">
               <Button size="lg" variant="outline" className="group">
                 Explorar Negocios
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link href="/registrar">
+            <Link href="/login">
               <Button size="lg" className="group">
                 <Store className="w-4 h-4 mr-2" />
                 Registrar mi Negocio
               </Button>
             </Link>
           </div>
+        </div>
+      </section>
+
+            {/* New Section */}
+      <section className="pb-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <Card className="border-border/50 overflow-hidden">
+            <CardContent className="p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                  <Users className="w-10 h-10 text-accent" />
+                </div>
+                <div className="text-center md:text-left">
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+                    ¡Prepárate para el futuro de Tizayuca!
+                  </h2>
+                  <p className="text-muted-foreground text-lg leading-relaxed">
+                    Pronto lanzaremos nuevas funcionalidades que potenciarán la experiencia comercial y social de Tizayuca. Si gustas ser parte, deja tus conmentarios en el forms.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
     </main>

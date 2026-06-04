@@ -11,15 +11,15 @@ export function HeroSection() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/hero-bg.jpg"
+          src="/images/inicial.png"
           alt="Vista de Tizayuca"
           fill
           className="object-cover"
           priority
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-accent/10" />
+       <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+       <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-accent/10" />  
       </div>
 
       {/* Content */}
@@ -36,7 +36,7 @@ export function HeroSection() {
           Descubre negocios locales cerca de ti
         </h1>
 
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed text-pretty">
+        <p className="text-lg md:text-xl text-black max-w-2xl mx-auto mb-10 leading-relaxed text-pretty">
           Encuentra restaurantes, cafés, tiendas y servicios locales en tu comunidad. 
           Apoya a los negocios de Tizayuca y fortalece la economía local.
         </p>

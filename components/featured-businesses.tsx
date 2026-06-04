@@ -6,22 +6,22 @@ import { Badge } from "@/components/ui/badge"
 
 const businesses = [
   {
-    name: "Café Central",
-    category: "Cafetería",
-    description: "El mejor café de la región con un ambiente acogedor. Disfruta de nuestras bebidas artesanales y repostería fresca.",
-    image: "/images/cafe-central.jpg",
+    name: "Plaza comercial Tizara",
+    category: "Entretenimiento y recreación",
+    description: "Espacio público emblemático del municipio que funciona como punto de encuentro para familias, visitantes y eventos comunitarios.",
+    image: "/images/tizara.jpg",
   },
   {
-    name: "Taquería El Sol",
-    category: "Restaurante",
-    description: "Tacos auténticos con recetas tradicionales. Los mejores tacos al pastor y carnitas de Tizayuca.",
-    image: "/images/taqueria-sol.jpg",
+    name: "Supermercado Aurrerá",
+    category: "Comercio",
+    description: "Uno de los principales supermercados de Tizayuca, ofreciendo una amplia variedad de productos para las familias de la región.",
+    image: "/images/aurrera.png",
   },
   {
-    name: "Papelería Lupita",
-    category: "Tienda",
-    description: "Todo en útiles escolares y de oficina. Servicio personalizado y los mejores precios de la zona.",
-    image: "/images/papeleria-lupita.jpg",
+    name: "Plaza comercial Alameda",
+    category: "Entretenimiento y recreación",
+    description: "Centro comercial de Tizayuca, que reúne tiendas, restaurantes, servicios y espacios de entretenimiento en un solo lugar.",
+    image: "/images/alameda.jpg",
   },
 ]
 

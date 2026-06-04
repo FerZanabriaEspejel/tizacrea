@@ -1,10 +1,24 @@
 "use client";
 
-import { Navbar } from "@/components/Navbar"
-import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+
+import { useState, useEffect } from "react";
+
+import { useRouter } from "next/navigation";
+
 import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
+
 import { Card, CardContent } from "@/components/ui/card";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const categories = [
   "Alimentos y bebidas",
@@ -27,138 +41,688 @@ const categories = [
   "Moda y textiles",
   "Servicios de limpieza y desinfección",
   "Marketing y publicidad",
-  "Otro"
+  "Otro",
 ];
 
 export default function RegisterBusinessPage() {
+
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
+
   const [form, setForm] = useState({
     name: "",
     category: "",
     address: "",
     phone: "",
-    hours: "",
     description: "",
-    facebook: "",
+
+     lat: null as number | null,
+  lng: null as number | null,
+
+    business_hours: {
+
+      monday: {
+        open: "",
+        close: "",
+        closed: false,
+      },
+
+      tuesday: {
+        open: "",
+        close: "",
+        closed: false,
+      },
+
+      wednesday: {
+        open: "",
+        close: "",
+        closed: false,
+      },
+
+      thursday: {
+        open: "",
+        close: "",
+        closed: false,
+      },
+
+      friday: {
+        open: "",
+        close: "",
+        closed: false,
+      },
+
+      saturday: {
+        open: "",
+        close: "",
+        closed: false,
+      },
+
+      sunday: {
+        open: "",
+        close: "",
+        closed: true,
+      },
+    },
   });
 
+  const [image, setImage] = useState<File | null>(null);
+
+ const [socials, setSocials] = useState([
+  {
+    type: "",
+    url: "",
+  },
+]);
+
+
+async function getCoordinates(address: string) {
+
+  try {
+
+const response = await fetch(
+  `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    address + ", Tizayuca, Hidalgo, México"
+  )}`
+);
+
+const data = await response.json();
+
+console.log("Dirección enviada:", address);
+console.log("Respuesta Nominatim:", data);
+
+if (data.length > 0) {
+
+  return {
+    lat: parseFloat(data[0].lat),
+    lng: parseFloat(data[0].lon),
+  };
+
+}
+
+return null;
+
+  } catch (error) {
+
+    console.error(error);
+
+    return null;
+
+  }
+}
+
+// 🔐 CHECK USER
+useEffect(() => {
+
+  const checkUser = async () => {
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+
+      router.push("/login");
+
+    } else {
+
+      setLoading(false);
+
+    }
+  };
+
+  checkUser();
+
+}, [router]);
+
+  // ✏️ HANDLE INPUTS
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement |
+      HTMLTextAreaElement |
+      HTMLSelectElement
+    >
   ) => {
+
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // 🌐 SOCIALS
+  function handleSocialChange(
+    index: number,
+    field: string,
+    value: string
+  ) {
+
+    const updated = [...socials];
+
+    updated[index] = {
+      ...updated[index],
+      [field]: value,
+    };
+
+    setSocials(updated);
+  }
+
+  function addSocial() {
+
+    setSocials([
+      ...socials,
+      {
+        type: "",
+        url: "",
+      },
+    ]);
+  }
+
+  // 🚀 SUBMIT
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
+
     e.preventDefault();
 
-    if (!form.name || !form.category || !form.address) {
+    if (
+      !form.name ||
+      !form.category ||
+      !form.address
+    ) {
+
       alert("Completa los campos obligatorios");
+
       return;
     }
 
-    console.log("Negocio registrado:", form);
+    // 🔐 USER
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    alert("Negocio registrado correctamente");
+    if (!user) {
+
+      alert("Debes iniciar sesión");
+
+      router.push("/login");
+
+      return;
+    }
+
+    // 📸 IMAGE
+    let imageUrl = "";
+
+    if (image) {
+
+      const fileName = `${Date.now()}-${image.name}`;
+
+      const { error: uploadError } =
+        await supabase.storage
+          .from("business-images")
+          .upload(fileName, image);
+
+      if (uploadError) {
+
+        console.error(uploadError.message);
+
+        alert("Error subiendo imagen");
+
+        return;
+      }
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage
+        .from("business-images")
+        .getPublicUrl(fileName);
+
+      imageUrl = publicUrl;
+    }
+
+    // 📍 OBTENER COORDENADAS
+let coordinates = null
+
+if (form.address) {
+
+  coordinates = await getCoordinates(
+    form.address
+  )
+
+  console.log("Dirección:", form.address)
+  console.log("Coordenadas:", coordinates)
+
+}
+
+    // 🧹 FILTRAR REDES
+    const filteredSocials = socials.filter(
+      (social) =>
+        social.type.trim() !== "" &&
+        social.url.trim() !== ""
+    );
+
+    // 💾 INSERT
+  const { error } = await supabase
+  .from("businesses")
+  .insert([
+    {
+      owner_id: user.id,
+
+      name: form.name,
+      category: form.category,
+      address: form.address,
+      phone: form.phone,
+      description: form.description,
+
+      business_hours: form.business_hours,
+      socials: filteredSocials,
+      image_url: imageUrl,
+
+      lat: coordinates?.lat ?? null,
+      lng: coordinates?.lng ?? null,
+    },
+  ]);
+
+    if (error) {
+
+      console.error(error.message);
+
+      alert("Error al registrar negocio");
+
+    } else {
+
+      alert("Negocio registrado correctamente 🎉");
+
+      router.push("/my-businesses");
+    }
   };
+
+  // ⏳ LOADING
+  if (loading) {
+
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+
+        <p className="text-muted-foreground">
+          Verificando sesión...
+        </p>
+
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-sky-50 to-orange-50">
-      <Navbar />
 
       {/* HEADER */}
       <section className="max-w-4xl mx-auto px-6 pt-28 pb-12 text-center">
+
         <h1 className="text-4xl font-bold text-foreground">
           Registrar negocio
         </h1>
+
         <p className="text-muted-foreground mt-2">
           Agrega tu negocio y hazlo visible para toda la comunidad
         </p>
+
       </section>
 
       {/* FORM */}
       <section className="max-w-2xl mx-auto px-6 pb-20">
+
         <Card className="border-border/50 shadow-lg">
+
           <CardContent className="p-6 space-y-4">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* NOMBRE */}
+
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5"
+            >
+
+              {/* NAME */}
               <Input
                 name="name"
                 placeholder="Nombre del negocio *"
                 value={form.name}
                 onChange={handleChange}
-                className="bg-background"
               />
 
-              {/* CATEGORÍA */}
+              {/* CATEGORY */}
               <select
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
-                <option value="">Selecciona una categoría *</option>
+
+                <option value="">
+                  Selecciona una categoría *
+                </option>
+
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>
+
+                  <option
+                    key={cat}
+                    value={cat}
+                  >
                     {cat}
                   </option>
+
                 ))}
+
               </select>
 
-              {/* DIRECCIÓN */}
+              {/* ADDRESS */}
               <Input
                 name="address"
                 placeholder="Dirección *"
                 value={form.address}
                 onChange={handleChange}
-                className="bg-background"
               />
 
-              {/* TELÉFONO */}
+              {/* PHONE */}
               <Input
                 name="phone"
                 placeholder="Teléfono"
                 value={form.phone}
                 onChange={handleChange}
-                className="bg-background"
               />
 
-              {/* HORARIO */}
-              <Input
-                name="hours"
-                placeholder="Horario (ej. 9am - 8pm)"
-                value={form.hours}
-                onChange={handleChange}
-                className="bg-background"
-              />
+              {/* HORARIOS */}
+              <div className="space-y-3">
 
-              {/* DESCRIPCIÓN */}
+                <div className="flex items-center justify-between">
+
+                  <div>
+
+                    <h2 className="font-semibold text-lg">
+                      Horarios
+                    </h2>
+
+                    <p className="text-sm text-muted-foreground">
+                      Configura horarios por día
+                    </p>
+
+                  </div>
+
+                  <Dialog>
+
+                    <DialogTrigger asChild>
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                      >
+                        Configurar horarios
+                      </Button>
+
+                    </DialogTrigger>
+
+                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+
+                      <DialogHeader>
+
+                        <DialogTitle>
+                          Horarios del negocio
+                        </DialogTitle>
+
+                      </DialogHeader>
+
+                      <div className="space-y-5 mt-4">
+
+                        {Object.entries(
+                          form.business_hours
+                        ).map(
+                          ([day, schedule]: any) => (
+
+                            <div
+                              key={day}
+                              className="border rounded-2xl p-4 space-y-3"
+                            >
+
+                              <div className="flex items-center justify-between">
+
+                                <h3 className="font-medium capitalize">
+                                  {day}
+                                </h3>
+
+                                <label className="flex items-center gap-2 text-sm">
+
+                                  <input
+                                    type="checkbox"
+                                    checked={schedule.closed}
+                                    onChange={(e) => {
+
+                                      setForm({
+                                        ...form,
+
+                                        business_hours: {
+                                          ...form.business_hours,
+
+                                          [day]: {
+                                            ...schedule,
+                                            closed: e.target.checked,
+                                          },
+                                        },
+                                      });
+
+                                    }}
+                                  />
+
+                                  Cerrado
+
+                                </label>
+
+                              </div>
+
+                              {!schedule.closed && (
+
+                                <div className="grid grid-cols-2 gap-3">
+
+                                  <div className="space-y-1">
+
+                                    <label className="text-sm text-muted-foreground">
+                                      Apertura
+                                    </label>
+
+                                    <Input
+                                      type="time"
+                                      value={schedule.open}
+                                      onChange={(e) => {
+
+                                        setForm({
+                                          ...form,
+
+                                          business_hours: {
+                                            ...form.business_hours,
+
+                                            [day]: {
+                                              ...schedule,
+                                              open: e.target.value,
+                                            },
+                                          },
+                                        });
+
+                                      }}
+                                    />
+
+                                  </div>
+
+                                  <div className="space-y-1">
+
+                                    <label className="text-sm text-muted-foreground">
+                                      Cierre
+                                    </label>
+
+                                    <Input
+                                      type="time"
+                                      value={schedule.close}
+                                      onChange={(e) => {
+
+                                        setForm({
+                                          ...form,
+
+                                          business_hours: {
+                                            ...form.business_hours,
+
+                                            [day]: {
+                                              ...schedule,
+                                              close: e.target.value,
+                                            },
+                                          },
+                                        });
+
+                                      }}
+                                    />
+
+                                  </div>
+
+                                </div>
+
+                              )}
+
+                            </div>
+
+                          )
+                        )}
+
+                      </div>
+
+                    </DialogContent>
+
+                  </Dialog>
+
+                </div>
+
+              </div>
+
+              {/* DESCRIPTION */}
               <textarea
                 name="description"
                 placeholder="Descripción del negocio"
                 value={form.description}
                 onChange={handleChange}
-                className="flex min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="flex min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               />
 
-              {/* FACEBOOK */}
-              <Input
-                name="facebook"
-                placeholder="Link de Facebook"
-                value={form.facebook}
-                onChange={handleChange}
-                className="bg-background"
+              {/* REDES */}
+              <div className="space-y-4">
+
+                <div className="flex items-center justify-between">
+
+                  <h2 className="font-semibold text-lg">
+                    Redes sociales
+                  </h2>
+
+                  <button
+                    type="button"
+                    onClick={addSocial}
+                    className="text-sm text-orange-500 hover:underline"
+                  >
+                    + Agregar red
+                  </button>
+
+                </div>
+
+                {socials.map((social, index) => (
+
+                  <div
+                    key={index}
+                    className="grid md:grid-cols-2 gap-3"
+                  >
+
+                    <select
+                      value={social.type}
+                      onChange={(e) =>
+                        handleSocialChange(
+                          index,
+                          "type",
+                          e.target.value
+                        )
+                      }
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    >
+
+                      <option value="">
+                        Tipo
+                      </option>
+
+                      <option value="facebook">
+                        Facebook
+                      </option>
+
+                      <option value="instagram">
+                        Instagram
+                      </option>
+
+                      <option value="tiktok">
+                        TikTok
+                      </option>
+
+                      <option value="whatsapp">
+                        WhatsApp
+                      </option>
+
+                      <option value="website">
+                        Sitio web
+                      </option>
+
+                    </select>
+
+                    <Input
+                      placeholder="Pega el link"
+                      value={social.url}
+                      onChange={(e) =>
+                        handleSocialChange(
+                          index,
+                          "url",
+                          e.target.value
+                        )
+                      }
+                    />
+
+                  </div>
+
+                ))}
+
+              </div>
+
+              {/* IMAGE */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+
+                  if (
+                    e.target.files &&
+                    e.target.files[0]
+                  ) {
+
+                    setImage(
+                      e.target.files[0]
+                    );
+                  }
+                }}
+                className="w-full border rounded-xl p-3 bg-white"
               />
 
-              {/* BOTÓN */}
-              <Button type="submit" className="w-full" size="lg">
+              {/* BUTTON */}
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+              >
                 Registrar negocio
               </Button>
+
             </form>
+
           </CardContent>
+
         </Card>
+
       </section>
+
     </main>
   );
 }

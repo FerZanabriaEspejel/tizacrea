@@ -4,16 +4,16 @@ import Image from "next/image"
 
 const galleryImages = [
   {
-    src: "/images/gallery-1.jpg",
-    alt: "Plaza principal de Tizayuca",
+    src: "/images/kiosco.png",
+    alt: "Kiosco del centro",
   },
   {
-    src: "/images/gallery-2.jpg",
-    alt: "Mercado local de Tizayuca",
+    src: "/images/cadmin.jpg",
+    alt: "Ciudad administrativa",
   },
   {
-    src: "/images/gallery-3.jpg",
-    alt: "Calles de Tizayuca",
+    src: "/images/iglesia.jpg",
+    alt: "Iglesia de Tizayuca",
   },
 ]
 
@@ -23,7 +23,7 @@ export function GallerySection() {
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
-            Descubre Tizayuca
+            Conoce Tizayuca
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
             Explora los rincones más hermosos de nuestra comunidad
