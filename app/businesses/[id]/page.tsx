@@ -321,24 +321,6 @@ export default function BusinessDetailPage() {
 
 )}
                 {/* FACEBOOK */}
-                {business.facebook && (
-
-                  <a
-                    href={business.facebook}
-                    target="_blank"
-                    className="w-full"
-                  >
-
-                    <Button
-                      variant="outline"
-                      className="w-full h-12"
-                    >
-                      Ir a Facebook
-                    </Button>
-
-                  </a>
-
-                )}
 
               </div>
 
