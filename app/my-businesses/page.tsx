@@ -1,12 +1,25 @@
 "use client"
 
+
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
+
 import { toast } from "sonner"
 
 import { supabase } from "@/lib/supabase"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 type Business = {
   id: number
@@ -36,43 +49,35 @@ export default function MyBusinessesPage() {
     useState(true)
 
   // 🗑️ DELETE
-  async function handleDelete(
-    id: number
-  ) {
+ async function handleDelete(id: number) {
 
-    const confirmed = window.confirm(
-      "¿Eliminar este negocio?"
+  const { error } = await supabase
+    .from("businesses")
+    .delete()
+    .eq("id", id)
+
+  if (error) {
+
+    console.error(error.message)
+
+    toast.error(
+      "No se pudo eliminar el negocio"
     )
 
-    if (!confirmed) return
+  } else {
 
-    const { error } = await supabase
-      .from("businesses")
-      .delete()
-      .eq("id", id)
+    toast.success(
+      "Negocio eliminado 🗑️"
+    )
 
-    if (error) {
-
-      console.error(error.message)
-
-      toast.error(
-        "No se pudo eliminar el negocio"
+    setBusinesses(
+      businesses.filter(
+        (business) =>
+          business.id !== id
       )
-
-    } else {
-
-      toast.success(
-        "Negocio eliminado 🗑️"
-      )
-
-      setBusinesses(
-        businesses.filter(
-          (business) =>
-            business.id !== id
-        )
-      )
-    }
+    )
   }
+}
 
   // 📦 FETCH
   useEffect(() => {
@@ -341,16 +346,56 @@ export default function MyBusinessesPage() {
                       Editar
                     </Link>
 
-                    <button
-                      onClick={() =>
-                        handleDelete(
-                          business.id
-                        )
-                      }
-                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition text-sm"
-                    >
-                      Eliminar
-                    </button>
+                    <AlertDialog>
+
+  <AlertDialogTrigger asChild>
+
+    <button
+      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl transition text-sm"
+    >
+      Eliminar
+    </button>
+
+  </AlertDialogTrigger>
+
+  <AlertDialogContent>
+
+    <AlertDialogHeader>
+
+      <AlertDialogTitle>
+        ¿Eliminar negocio?
+      </AlertDialogTitle>
+
+      <AlertDialogDescription>
+        Esta acción eliminará permanentemente
+        el negocio "{business.name}".
+        No podrás recuperarlo después.
+      </AlertDialogDescription>
+
+    </AlertDialogHeader>
+
+    <AlertDialogFooter>
+
+      <AlertDialogCancel>
+        Cancelar
+      </AlertDialogCancel>
+
+      <AlertDialogAction
+        onClick={() =>
+          handleDelete(
+            business.id
+          )
+        }
+        className="bg-red-500 hover:bg-red-600"
+      >
+        Sí, eliminar
+      </AlertDialogAction>
+
+    </AlertDialogFooter>
+
+  </AlertDialogContent>
+
+</AlertDialog>
 
                   </div>
 
