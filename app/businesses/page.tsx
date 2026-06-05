@@ -2,6 +2,8 @@ import { Navbar } from "@/components/Navbar"
 import BusinessList from "@/components/BusinessList"
 import { supabase } from "@/lib/supabase"
 
+export const dynamic = "force-dynamic";
+
 export default async function BusinessesPage() {
 
   const { data: businesses, error } = await supabase
