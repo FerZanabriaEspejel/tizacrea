@@ -320,8 +320,15 @@ if (form.address) {
       socials: filteredSocials,
       image_url: imageUrl,
 
-      lat: coordinates?.lat ?? null,
-      lng: coordinates?.lng ?? null,
+      lat:
+  form.lat ??
+  coordinates?.lat ??
+  null,
+
+lng:
+  form.lng ??
+  coordinates?.lng ??
+  null,
     },
   ]);
 
@@ -430,6 +437,68 @@ if (form.address) {
                 value={form.address}
                 onChange={handleChange}
               />
+<Button
+  type="button"
+  variant="outline"
+  onClick={async () => {
+
+    if (!form.address) {
+
+      toast.error(
+        "Escribe una dirección primero"
+      );
+
+      return;
+    }
+
+    const coords =
+      await getCoordinates(
+        form.address
+      );
+
+    if (!coords) {
+
+      toast.error(
+        "No se encontró la ubicación"
+      );
+
+      return;
+    }
+
+    setForm({
+      ...form,
+      lat: coords.lat,
+      lng: coords.lng,
+    });
+
+    toast.success(
+      "Ubicación encontrada 📍"
+    );
+
+  }}
+>
+  📍 Buscar ubicación
+</Button>
+
+{form.lat && form.lng && (
+
+  <div className="text-sm bg-green-50 border border-green-200 rounded-xl p-3">
+
+    <p className="font-medium text-green-700">
+      Ubicación encontrada
+    </p>
+
+    <p className="text-green-600">
+      Lat: {form.lat}
+    </p>
+
+    <p className="text-green-600">
+      Lng: {form.lng}
+    </p>
+
+  </div>
+
+)}
 
               {/* PHONE */}
               <Input
