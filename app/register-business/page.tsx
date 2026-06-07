@@ -2,6 +2,8 @@
 
 import { supabase } from "@/lib/supabase";
 
+import { toast } from "sonner";
+
 import { useState, useEffect } from "react";
 
 import { useRouter } from "next/navigation";
@@ -325,17 +327,22 @@ if (form.address) {
 
     if (error) {
 
-      console.error(error.message);
+  console.error(error.message);
 
-      alert("Error al registrar negocio");
+  toast.error(
+    "Error al registrar negocio"
+  );
 
-    } else {
+} else {
 
-      alert("Negocio registrado correctamente 🎉");
+  toast.success(
+    "Negocio registrado correctamente 🎉"
+  );
 
-      router.push("/my-businesses");
-    }
-  };
+  setTimeout(() => {
+    router.push("/my-businesses");
+  }, 1200);
+}
 
   // ⏳ LOADING
   if (loading) {

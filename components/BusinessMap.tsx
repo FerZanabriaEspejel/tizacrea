@@ -10,7 +10,6 @@ import {
 import L from "leaflet"
 import Link from "next/link"
 
-// ✅ Fix iconos Leaflet
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png"
 import markerIcon from "leaflet/dist/images/marker-icon.png"
 import markerShadow from "leaflet/dist/images/marker-shadow.png"
@@ -26,6 +25,7 @@ type Business = {
   name: string
   category: string
   address: string
+  image_url?: string
   lat?: number
   lng?: number
 }
@@ -38,88 +38,99 @@ export default function BusinessMap({
   businesses,
 }: Props) {
 
-  // 📍 Centro Tizayuca
   const defaultCenter: [number, number] = [
     19.837,
     -98.977,
   ]
 
+  const validBusinesses = businesses.filter(
+    (business) =>
+      business.lat !== null &&
+      business.lng !== null &&
+      business.lat !== undefined &&
+      business.lng !== undefined
+  )
+
+  const center: [number, number] =
+    validBusinesses.length === 1
+      ? [
+          validBusinesses[0].lat!,
+          validBusinesses[0].lng!,
+        ]
+      : defaultCenter
+
+  const zoom =
+    validBusinesses.length === 1
+      ? 17
+      : 13
+
   return (
 
-    <div className="w-full h-[500px] rounded-3xl overflow-hidden shadow-lg border">
+    <div className="w-full h-[500px] rounded-3xl overflow-hidden shadow-xl border border-zinc-200">
 
       <MapContainer
-  key={businesses[0]?.id || "map"}
-  center={defaultCenter}
-  zoom={13}
-  scrollWheelZoom={true}
-  className="w-full h-full z-0"
->
+        key={validBusinesses[0]?.id || "map"}
+        center={center}
+        zoom={zoom}
+        scrollWheelZoom={true}
+        className="w-full h-full z-0"
+      >
 
-        {/* 🌎 MAPA */}
         <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
+          attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* 📌 MARKERS */}
-        {businesses.map((business) => {
+        {validBusinesses.map((business) => (
 
-          // ❌ sin coordenadas
-          if (
-            business.lat === null ||
-            business.lng === null ||
-            business.lat === undefined ||
-            business.lng === undefined
-          ) {
-            return null
-          }
+          <Marker
+            key={business.id}
+            position={[
+              business.lat!,
+              business.lng!,
+            ]}
+          >
 
-          return (
+            <Popup>
 
-            <Marker
-              key={business.id}
-              position={[
-                business.lat,
-                business.lng,
-              ]}
-            >
+              <div className="w-[220px]">
 
-              <Popup>
+                {business.image_url && (
 
-                <div className="space-y-2 min-w-[180px]">
+                  <img
+                    src={business.image_url}
+                    alt={business.name}
+                    className="w-full h-28 object-cover rounded-lg mb-3"
+                  />
 
-                  <div>
+                )}
 
-                    <h3 className="font-bold text-base">
-                      {business.name}
-                    </h3>
+                <h3 className="font-bold text-lg leading-tight">
+                  {business.name}
+                </h3>
 
-                    <p className="text-sm text-orange-600">
-                      {business.category}
-                    </p>
+                <p className="text-orange-600 text-sm font-medium mb-2">
+                  {business.category}
+                </p>
 
-                  </div>
+                <p className="text-sm text-zinc-600 mb-3">
+                  {business.address}
+                </p>
 
-                  <p className="text-sm text-zinc-600">
-                    {business.address}
-                  </p>
+                <Link
+                  href={`/businesses/${business.id}`}
+                  className="block text-center bg-orange-500 hover:bg-orange-600 text-white text-sm py-2 rounded-lg transition"
+                >
+                  Ver negocio
+                </Link>
 
-                  <Link
-                    href={`/businesses/${business.id}`}
-                    className="inline-block text-sm bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg transition"
-                  >
-                    Ver negocio
-                  </Link>
+              </div>
 
-                </div>
+            </Popup>
 
-              </Popup>
+          </Marker>
 
-            </Marker>
-
-          )
-        })}
+        ))}
 
       </MapContainer>
 
