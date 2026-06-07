@@ -325,7 +325,7 @@ if (form.address) {
     },
   ]);
 
-    if (error) {
+   if (error) {
 
   console.error(error.message);
 
@@ -342,9 +342,13 @@ if (form.address) {
   setTimeout(() => {
     router.push("/my-businesses");
   }, 1200);
+
 }
 
-  // ⏳ LOADING
+};
+
+
+// ⏳ LOADING
   if (loading) {
 
     return (
@@ -732,4 +736,4 @@ if (form.address) {
 
     </main>
   );
-}
+} 
