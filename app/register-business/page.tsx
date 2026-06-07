@@ -124,8 +124,8 @@ async function getCoordinates(address: string) {
 
 const response = await fetch(
   `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-    address + ", Tizayuca, Hidalgo, México"
-  )}`
+    address
+  )}&countrycodes=mx&limit=1`
 );
 
 const data = await response.json();
