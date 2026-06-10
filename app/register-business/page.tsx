@@ -62,6 +62,7 @@ export default function RegisterBusinessPage() {
     postal_code: "",
     phone: "",
     description: "",
+    google_maps_url: "",
 
      lat: null as number | null,
   lng: null as number | null,
@@ -361,28 +362,30 @@ console.log(
   .from("businesses")
   .insert([
     {
-      owner_id: user.id,
+  owner_id: user.id,
 
-      name: form.name,
-      category: form.category,
-      address: fullAddress,
-      phone: form.phone,
-      description: form.description,
+  name: form.name,
+  category: form.category,
+  address: fullAddress,
+  phone: form.phone,
+  description: form.description,
 
-      business_hours: form.business_hours,
-      socials: filteredSocials,
-      image_url: imageUrl,
+  business_hours: form.business_hours,
+  socials: filteredSocials,
+  image_url: imageUrl,
 
-      lat:
-  form.lat ??
-  coordinates?.lat ??
-  null,
+  google_maps_url: form.google_maps_url,
 
-lng:
-  form.lng ??
-  coordinates?.lng ??
-  null,
-    },
+  lat:
+    form.lat ??
+    coordinates?.lat ??
+    null,
+
+  lng:
+    form.lng ??
+    coordinates?.lng ??
+    null,
+},
   ]);
 
    if (error) {
@@ -523,6 +526,17 @@ lng:
   value={form.postal_code}
   onChange={handleChange}
 />
+
+<Input
+  name="google_maps_url"
+  placeholder="Link de Google Maps (opcional)"
+  value={form.google_maps_url}
+  onChange={handleChange}
+/>
+
+<p className="text-xs text-muted-foreground">
+  Google Maps → Compartir → Copiar enlace → Pegar aquí
+</p>
 
 
 <Button

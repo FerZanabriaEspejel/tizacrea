@@ -34,8 +34,11 @@ type Business = {
   phone: string;
   description: string;
   image_url: string;
+
   lat?: number;
   lng?: number;
+
+  google_maps_url?: string;
 
   business_hours?: Record<
     string,
@@ -272,6 +275,24 @@ export default function BusinessDetailPage() {
                   >
                     Ver ubicación
                   </Button>
+
+{business.google_maps_url && (
+
+  <a
+    href={business.google_maps_url}
+    target="_blank"
+  >
+
+    <Button
+      variant="outline"
+      className="w-full h-12"
+    >
+      Abrir en Google Maps
+    </Button>
+
+  </a>
+
+)}
 
                 </a>
 {/* SOCIALS */}
