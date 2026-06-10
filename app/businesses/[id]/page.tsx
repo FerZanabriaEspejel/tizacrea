@@ -262,39 +262,43 @@ export default function BusinessDetailPage() {
                 )}
 
                 {/* MAP BUTTON */}
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    business.address
-                  )}`}
-                  target="_blank"
-                >
-
-                  <Button
-                    variant="outline"
-                    className="w-full h-12"
-                  >
-                    Ver ubicación
-                  </Button>
-
-{business.google_maps_url && (
+                {business.google_maps_url ? (
 
   <a
     href={business.google_maps_url}
     target="_blank"
+    rel="noopener noreferrer"
+  >
+
+    <Button
+      className="w-full h-12 bg-green-600 hover:bg-green-700 text-white"
+    >
+      📍 Abrir en Google Maps
+    </Button>
+
+  </a>
+
+) : (
+
+  <a
+    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      business.address
+    )}`}
+    target="_blank"
+    rel="noopener noreferrer"
   >
 
     <Button
       variant="outline"
       className="w-full h-12"
     >
-      Abrir en Google Maps
+      Ver ubicación
     </Button>
 
   </a>
 
 )}
 
-                </a>
 {/* SOCIALS */}
 {business.socials &&
   business.socials.length > 0 && (
