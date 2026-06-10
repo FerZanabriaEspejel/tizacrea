@@ -81,6 +81,15 @@ export default function EditBusinessPage() {
     phone: "",
     description: "",
     image_url: "",
+    street: "",
+    external_number: "",
+    internal_number: "",
+    neighborhood: "",
+    postal_code: "",
+    google_maps_url: "",
+
+    lat: null as number | null,
+    lng: null as number | null,
 
     business_hours: {
 
@@ -183,19 +192,25 @@ export default function EditBusinessPage() {
       }
 
       setForm({
-        name: data.name || "",
-        category: data.category || "",
-        address: data.address || "",
-        phone: data.phone || "",
-        description:
-          data.description || "",
-        image_url:
-          data.image_url || "",
+  name: data.name || "",
+  category: data.category || "",
+  address: data.address || "",
+  phone: data.phone || "",
+  description: data.description || "",
+  image_url: data.image_url || "",
 
-        business_hours:
-          data.business_hours ||
-          form.business_hours,
-      })
+  street: data.street || "",
+  external_number: data.external_number || "",
+  internal_number: data.internal_number || "",
+  neighborhood: data.neighborhood || "",
+  postal_code: data.postal_code || "",
+  google_maps_url: data.google_maps_url || "",
+
+  lat: data.lat,
+  lng: data.lng,
+
+  business_hours: data.business_hours || form.business_hours,
+})
 
       setSocials(
         data.socials?.length > 0
@@ -326,6 +341,16 @@ export default function EditBusinessPage() {
           phone: form.phone,
           description:
             form.description,
+            street: form.street,
+external_number: form.external_number,
+internal_number: form.internal_number,
+neighborhood: form.neighborhood,
+postal_code: form.postal_code,
+
+google_maps_url: form.google_maps_url,
+
+lat: form.lat,
+lng: form.lng,
 
           image_url:
             imageUrl,
@@ -460,6 +485,131 @@ export default function EditBusinessPage() {
                 </select>
 
               </div>
+
+              <Input
+  name="street"
+  placeholder="Calle *"
+  value={form.street}
+  onChange={handleChange}
+/>
+
+<div className="grid grid-cols-2 gap-3">
+
+  <Input
+    name="external_number"
+    placeholder="Número exterior *"
+    value={form.external_number}
+    onChange={handleChange}
+  />
+
+  <Input
+    name="internal_number"
+    placeholder="Número interior"
+    value={form.internal_number}
+    onChange={handleChange}
+  />
+
+</div>
+
+<Input
+  name="neighborhood"
+  placeholder="Colonia *"
+  value={form.neighborhood}
+  onChange={handleChange}
+/>
+
+<Input
+  name="postal_code"
+  placeholder="Código Postal"
+  value={form.postal_code}
+  onChange={handleChange}
+/>
+
+<Input
+  name="google_maps_url"
+  placeholder="Link de Google Maps (opcional)"
+  value={form.google_maps_url}
+  onChange={handleChange}
+/>
+
+<Button
+  type="button"
+  className="w-full bg-orange-500 hover:bg-orange-600"
+  onClick={() => {
+
+    if (!navigator.geolocation) {
+
+      toast.error(
+        "Tu navegador no soporta geolocalización"
+      );
+
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+      (position) => {
+
+        setForm({
+          ...form,
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+
+        toast.success(
+          "Ubicación obtenida 📍"
+        );
+
+      },
+
+      () => {
+
+        toast.error(
+          "No pudimos obtener tu ubicación"
+        );
+
+      }
+
+    );
+
+  }}
+>
+  📍 Usar mi ubicación actual
+</Button>
+
+{form.lat && form.lng && (
+
+  <div className="space-y-3">
+
+    <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+
+      <p className="text-green-700 font-medium">
+        ✅ Ubicación obtenida correctamente
+      </p>
+
+      <p className="text-sm text-green-600 mt-1">
+        Arrastra el marcador si deseas ajustar la ubicación exacta.
+      </p>
+
+    </div>
+
+    <LocationPicker
+      lat={form.lat}
+      lng={form.lng}
+      onChange={(lat, lng) => {
+
+        setForm({
+          ...form,
+          lat,
+          lng,
+        });
+
+      }}
+    />
+
+  </div>
+
+)}
 
               {/* DIRECCIÓN */}
               <div className="space-y-2">
