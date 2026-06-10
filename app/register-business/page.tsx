@@ -146,6 +146,37 @@ if (data.length > 0) {
 
 }
 
+console.log(
+  "Intentando búsqueda simplificada..."
+);
+
+const fallback = await fetch(
+  `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    `${form.neighborhood}, Tizayuca, Hidalgo, México`
+  )}&countrycodes=mx&limit=1`
+);
+
+const fallbackData =
+  await fallback.json();
+
+console.log(
+  "Fallback:",
+  fallbackData
+);
+
+if (fallbackData.length > 0) {
+
+  return {
+    lat: parseFloat(
+      fallbackData[0].lat
+    ),
+    lng: parseFloat(
+      fallbackData[0].lon
+    ),
+  };
+
+}
+
 return null;
 
   } catch (error) {
@@ -290,9 +321,7 @@ useEffect(() => {
 
 const fullAddress = [
   `${form.street} ${form.external_number}`,
-  form.internal_number,
   form.neighborhood,
-  form.postal_code,
   "Tizayuca",
   "Hidalgo",
   "México",
