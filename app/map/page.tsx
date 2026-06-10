@@ -1,12 +1,8 @@
 "use client"
 
-import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
-
-const MapComponent = dynamic(() => import("./mapcomponent"), {
-  ssr: false,
-})
+import MapComponent from "./mapcomponent"
 
 type Business = {
   id: string | number
@@ -32,5 +28,22 @@ export default function MapPage() {
     fetchData()
   }, [])
 
-  return <MapComponent businesses={businesses} />
+  return (
+    <div className="min-h-screen flex flex-col">
+      
+      {/* HEADER / TITLE AREA */}
+      <div className="p-4">
+        <h1 className="text-xl font-semibold">Mapa de Negocios</h1>
+        <p className="text-sm text-gray-500">
+          Explora negocios cerca de ti
+        </p>
+      </div>
+
+      {/* MAPA CONTAINER */}
+      <div className="flex-1 px-4 pb-4">
+        <MapComponent businesses={businesses} />
+      </div>
+
+    </div>
+  )
 }

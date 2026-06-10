@@ -46,9 +46,12 @@ export default function MapComponent({
       if (b.lat && b.lng) {
         const marker = L.marker([b.lat, b.lng], {
           icon: blueIcon,
-        }).bindPopup(
-          `<b>${b.name}</b><br/>${b.category ?? ""}`
-        )
+        }).bindPopup(`
+          <div>
+            <b>${b.name}</b><br/>
+            ${b.category ?? ""}
+          </div>
+        `)
 
         clusterGroup.addLayer(marker)
       }
@@ -61,5 +64,9 @@ export default function MapComponent({
     }
   }, [businesses])
 
-  return <div id="map" className="h-screen w-full" />
+  return (
+    <div className="h-[75vh] w-full rounded-xl overflow-hidden shadow-md border">
+      <div id="map" className="h-full w-full" />
+    </div>
+  )
 }
