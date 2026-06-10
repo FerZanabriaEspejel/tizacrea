@@ -333,20 +333,25 @@ const fullAddress = [
     // 📍 OBTENER COORDENADAS
 let coordinates = null
 
-if (fullAddress) {
-
-coordinates = await getCoordinates(
+if (
+  !form.lat &&
+  !form.lng &&
   fullAddress
-)
+) {
 
-console.log(
-  "Dirección:",
-  fullAddress
-)
-console.log(
-  "Coordenadas:",
-  coordinates
-)
+  coordinates = await getCoordinates(
+    fullAddress
+  )
+
+  console.log(
+    "Dirección:",
+    fullAddress
+  )
+
+  console.log(
+    "Coordenadas:",
+    coordinates
+  )
 
 }
 
@@ -534,91 +539,88 @@ console.log(
   onChange={handleChange}
 />
 
-<p className="text-xs text-muted-foreground">
-  Google Maps → Compartir → Copiar enlace → Pegar aquí
-</p>
+{form.google_maps_url && (
 
+  <a
+    href={form.google_maps_url}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+
+    <Button
+      type="button"
+      variant="outline"
+      className="w-full"
+    >
+      📍 Abrir Google Maps
+    </Button>
+
+  </a>
+
+)}
 
 <Button
   type="button"
-  variant="outline"
-  onClick={async () => {
+  className="w-full bg-orange-500 hover:bg-orange-600"
+  onClick={() => {
 
-const fullAddress = [
-  `${form.street} ${form.external_number}`,
-  form.internal_number,
-  form.neighborhood,
-  form.postal_code,
-  "Tizayuca",
-  "Hidalgo",
-  "México",
-]
-.filter(Boolean)
-.join(", ");
-
-if (
-  !form.street ||
-  !form.external_number ||
-  !form.neighborhood
-) {
-
-  toast.error(
-    "Completa calle, número y colonia"
-  );
-
-  return;
-}
-
-console.log("FULL ADDRESS:", fullAddress);
-
-const coords =
-  await getCoordinates(
-    fullAddress
-  );
-
-    if (!coords) {
+    if (!navigator.geolocation) {
 
       toast.error(
-        "No se encontró la ubicación"
+        "Tu navegador no soporta geolocalización"
       );
 
       return;
     }
 
-    setForm({
-      ...form,
-      lat: coords.lat,
-      lng: coords.lng,
-    });
+    navigator.geolocation.getCurrentPosition(
 
-    toast.success(
-      "Ubicación encontrada 📍"
+      (position) => {
+
+        setForm({
+          ...form,
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+
+        toast.success(
+          "Ubicación obtenida 📍"
+        );
+      },
+
+      () => {
+
+        toast.error(
+          "No pudimos obtener tu ubicación"
+        );
+
+      }
+
     );
 
   }}
 >
-  📍 Buscar ubicación
+  📍 Usar mi ubicación actual
 </Button>
 
 {form.lat && form.lng && (
 
-  <div className="text-sm bg-green-50 border border-green-200 rounded-xl p-3">
+  <div className="bg-green-50 border border-green-200 rounded-xl p-3">
 
-    <p className="font-medium text-green-700">
-      Ubicación encontrada
-    </p>
-
-    <p className="text-green-600">
-      Lat: {form.lat}
-    </p>
-
-    <p className="text-green-600">
-      Lng: {form.lng}
+    <p className="text-green-700 font-medium">
+      ✅ Ubicación obtenida correctamente
     </p>
 
   </div>
 
 )}
+
+<p className="text-xs text-muted-foreground">
+  Google Maps → Compartir → Copiar enlace → Pegar aquí
+</p>
+
+
+
 
               {/* PHONE */}
               <Input
