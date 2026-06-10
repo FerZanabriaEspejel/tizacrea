@@ -65,6 +65,13 @@ export function Navbar() {
               Negocios
             </Link>
 
+
+<Link
+  href="/map"
+  className="text-foreground hover:text-primary transition"
+>
+  Mapa
+</Link>
             <Link
               href="/about"
               className="text-foreground hover:text-primary transition"
@@ -154,6 +161,14 @@ export function Navbar() {
               >
                 Negocios
               </Link>
+
+<Link
+  href="/map"
+  onClick={() => setIsMenuOpen(false)}
+  className="text-foreground hover:text-primary transition"
+>
+  Mapa
+</Link>
 
               <Link
                 href="/about"

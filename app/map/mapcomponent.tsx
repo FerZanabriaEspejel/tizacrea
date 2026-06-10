@@ -2,6 +2,8 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
+import "leaflet.markercluster/dist/MarkerCluster.css"
+import "leaflet.markercluster/dist/MarkerCluster.Default.css"
 
 import L from "leaflet"
 import { useEffect } from "react"
@@ -11,6 +13,8 @@ type Business = {
   name: string
   lat: number
   lng: number
+  category?: string
+  rating?: number
 }
 
 const blueIcon = new L.Icon({
@@ -29,28 +33,33 @@ export default function MapComponent({
     const L = require("leaflet")
     require("leaflet.markercluster")
 
-    const map = L.map("map").setView([19.4326, -99.1332], 12)
+    const map = L.map("map", {
+      center: [19.4326, -99.1332],
+      zoom: 12,
+    })
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
 
-    const markers = L.markerClusterGroup()
+    const clusterGroup = L.markerClusterGroup()
 
     businesses.forEach((b) => {
       if (b.lat && b.lng) {
         const marker = L.marker([b.lat, b.lng], {
           icon: blueIcon,
-        }).bindPopup(`<b>${b.name}</b>`)
+        }).bindPopup(
+          `<b>${b.name}</b><br/>${b.category ?? ""}`
+        )
 
-        markers.addLayer(marker)
+        clusterGroup.addLayer(marker)
       }
     })
 
-    map.addLayer(markers)
+    map.addLayer(clusterGroup)
 
     return () => {
       map.remove()
     }
   }, [businesses])
 
-  return <div id="map" style={{ height: "100vh", width: "100%" }} />
+  return <div id="map" className="h-screen w-full" />
 }
