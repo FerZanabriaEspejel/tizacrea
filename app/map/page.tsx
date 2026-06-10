@@ -11,10 +11,9 @@ type Business = {
   name: string
   lat: number
   lng: number
-  category?: string
 }
 
-// 🔵 Icono azul
+// 🔵 icono azul
 const blueIcon = new L.Icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
@@ -22,77 +21,29 @@ const blueIcon = new L.Icon({
   iconAnchor: [12, 41],
 })
 
-// 📌 Categorías
-const categories = [
-  "Todos",
-  "Alimentos y bebidas",
-  "Comercio al por menor (Retail)",
-  "Salud y bienestar",
-  "Belleza y cuidado personal",
-  "Servicios profesionales y consultoría",
-  "Educación y capacitación",
-  "Tecnología y software",
-  "Construcción y mantenimiento de inmuebles",
-  "Automotriz (Venta y servicios)",
-  "Logística y transporte",
-  "Servicios financieros",
-  "Entretenimiento y recreación",
-  "Turismo y hospitalidad",
-  "Servicios para mascotas",
-  "Inmobiliaria y bienes raíces",
-  "Manufactura y producción",
-  "Energía y servicios sustentables",
-  "Moda y textiles",
-  "Servicios de limpieza y desinfección",
-  "Marketing y publicidad",
-  "Otro",
-]
-
 export default function MapPage() {
   const [businesses, setBusinesses] = useState<Business[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>("Todos")
 
-  // 📦 cargar negocios
+  // 📦 cargar datos
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchBusinesses = async () => {
       const { data, error } = await supabase
         .from("businesses")
-        .select("id, name, lat, lng, category")
+        .select("id, name, lat, lng")
 
-      if (!error) {
-        setBusinesses(data || [])
+      if (error) {
+        console.error(error)
+        return
       }
+
+      setBusinesses(data || [])
     }
 
-    fetchData()
+    fetchBusinesses()
   }, [])
-
-  // 🎯 filtro por categoría
-  const filteredBusinesses =
-    selectedCategory === "Todos"
-      ? businesses
-      : businesses.filter((b) => b.category === selectedCategory)
 
   return (
     <div style={{ height: "100vh", width: "100%" }}>
-      {/* 🎛️ FILTROS */}
-      <div className="absolute z-[1000] top-3 left-3 bg-white p-2 rounded-lg shadow max-w-[90%] flex gap-2 flex-wrap">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-3 py-1 rounded-full text-sm border transition ${
-              selectedCategory === cat
-                ? "bg-blue-500 text-white"
-                : "bg-white text-black"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* 🗺️ MAPA */}
       <MapContainer
         center={[19.4326, -99.1332]} // CDMX
         zoom={12}
@@ -100,7 +51,7 @@ export default function MapPage() {
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-        {filteredBusinesses.map((b) =>
+        {businesses.map((b) =>
           b.lat && b.lng ? (
             <Marker
               key={b.id}
@@ -108,11 +59,7 @@ export default function MapPage() {
               icon={blueIcon}
             >
               <Popup>
-                <div>
-                  <b>{b.name}</b>
-                  <br />
-                  <small>{b.category}</small>
-                </div>
+                <b>{b.name}</b>
               </Popup>
             </Marker>
           ) : null
