@@ -56,6 +56,11 @@ export default function RegisterBusinessPage() {
     name: "",
     category: "",
     address: "",
+    street: "",
+    external_number: "",
+    internal_number: "",
+    neighborhood: "",
+    postal_code: "",
     phone: "",
     description: "",
 
@@ -228,10 +233,12 @@ useEffect(() => {
     e.preventDefault();
 
     if (
-      !form.name ||
-      !form.category ||
-      !form.address
-    ) {
+  !form.name ||
+  !form.category ||
+  !form.street ||
+  !form.external_number ||
+  !form.neighborhood
+) {
 
       alert("Completa los campos obligatorios");
 
@@ -282,17 +289,33 @@ useEffect(() => {
       imageUrl = publicUrl;
     }
 
+const fullAddress = `
+${form.street} ${form.external_number}
+${form.internal_number || ""}
+${form.neighborhood}
+${form.postal_code || ""}
+Tizayuca, Hidalgo, México
+`
+  .replace(/\s+/g, " ")
+  .trim();
+
     // 📍 OBTENER COORDENADAS
 let coordinates = null
 
 if (form.address) {
 
-  coordinates = await getCoordinates(
-    form.address
-  )
+coordinates = await getCoordinates(
+  fullAddress
+)
 
-  console.log("Dirección:", form.address)
-  console.log("Coordenadas:", coordinates)
+console.log(
+  "Dirección:",
+  fullAddress
+)
+console.log(
+  "Coordenadas:",
+  coordinates
+)
 
 }
 
@@ -312,7 +335,7 @@ if (form.address) {
 
       name: form.name,
       category: form.category,
-      address: form.address,
+      address: fullAddress,
       phone: form.phone,
       description: form.description,
 
@@ -437,24 +460,79 @@ lng:
                 value={form.address}
                 onChange={handleChange}
               />
+
+              <Input
+  name="street"
+  placeholder="Calle *"
+  value={form.street}
+  onChange={handleChange}
+/>
+
+<div className="grid grid-cols-2 gap-3">
+
+  <Input
+    name="external_number"
+    placeholder="Número exterior *"
+    value={form.external_number}
+    onChange={handleChange}
+  />
+
+  <Input
+    name="internal_number"
+    placeholder="Número interior"
+    value={form.internal_number}
+    onChange={handleChange}
+  />
+
+</div>
+
+<Input
+  name="neighborhood"
+  placeholder="Colonia *"
+  value={form.neighborhood}
+  onChange={handleChange}
+/>
+
+<Input
+  name="postal_code"
+  placeholder="Código Postal"
+  value={form.postal_code}
+  onChange={handleChange}
+/>
+
+
 <Button
   type="button"
   variant="outline"
   onClick={async () => {
 
-    if (!form.address) {
+    const fullAddress = `
+${form.street} ${form.external_number}
+${form.internal_number || ""}
+${form.neighborhood}
+${form.postal_code || ""}
+Tizayuca, Hidalgo, México
+`
+.replace(/\s+/g, " ")
+.trim();
 
-      toast.error(
-        "Escribe una dirección primero"
-      );
+if (
+  !form.street ||
+  !form.external_number ||
+  !form.neighborhood
+) {
 
-      return;
-    }
+  toast.error(
+    "Completa calle, número y colonia"
+  );
 
-    const coords =
-      await getCoordinates(
-        form.address
-      );
+  return;
+}
+
+const coords =
+  await getCoordinates(
+    fullAddress
+  );
 
     if (!coords) {
 
