@@ -55,7 +55,6 @@ export default function RegisterBusinessPage() {
   const [form, setForm] = useState({
     name: "",
     category: "",
-    address: "",
     street: "",
     external_number: "",
     internal_number: "",
@@ -302,7 +301,7 @@ Tizayuca, Hidalgo, México
     // 📍 OBTENER COORDENADAS
 let coordinates = null
 
-if (form.address) {
+if (fullAddress) {
 
 coordinates = await getCoordinates(
   fullAddress
@@ -454,12 +453,6 @@ lng:
               </select>
 
               {/* ADDRESS */}
-              <Input
-                name="address"
-                placeholder="Dirección *"
-                value={form.address}
-                onChange={handleChange}
-              />
 
               <Input
   name="street"
