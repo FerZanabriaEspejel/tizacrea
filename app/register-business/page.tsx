@@ -24,8 +24,19 @@ import {
 
 import dynamic from "next/dynamic";
 
+
+
 const BusinessMap = dynamic(
   () => import("@/components/BusinessMap"),
+  {
+    ssr: false,
+  }
+);
+const LocationPicker = dynamic(
+  () =>
+    import(
+      "@/components/LocationPicker"
+    ),
   {
     ssr: false,
   }
@@ -616,7 +627,7 @@ if (
 
 {form.lat && form.lng && (
 
-  <>
+  <div className="space-y-3">
 
     <div className="bg-green-50 border border-green-200 rounded-xl p-3">
 
@@ -624,35 +635,31 @@ if (
         ✅ Ubicación obtenida correctamente
       </p>
 
-      <a
-        href={`https://www.google.com/maps?q=${form.lat},${form.lng}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block mt-2 text-sm text-blue-600 underline"
-      >
-        Ver ubicación capturada
-      </a>
+      <p className="text-sm text-green-600 mt-1">
+        Arrastra el marcador si deseas ajustar la ubicación exacta.
+      </p>
 
     </div>
 
-    <div className="rounded-2xl overflow-hidden border mt-3">
+    <LocationPicker
+      lat={form.lat}
+      lng={form.lng}
+      onChange={(lat, lng) => {
 
-      <BusinessMap
-        businesses={[
-          {
-            id: 0,
-            name: "Tu negocio",
-            category: "Ubicación",
-            address: "Ubicación seleccionada",
-            lat: form.lat,
-            lng: form.lng,
-          },
-        ]}
-      />
+        setForm({
+          ...form,
+          lat,
+          lng,
+        });
 
-    </div>
+        toast.success(
+          "Ubicación actualizada 📍"
+        );
 
-  </>
+      }}
+    />
+
+  </div>
 
 )}
 
