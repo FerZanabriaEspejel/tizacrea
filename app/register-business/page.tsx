@@ -288,15 +288,17 @@ useEffect(() => {
       imageUrl = publicUrl;
     }
 
-const fullAddress = `
-${form.street} ${form.external_number}
-${form.internal_number || ""}
-${form.neighborhood}
-${form.postal_code || ""}
-Tizayuca, Hidalgo, México
-`
-  .replace(/\s+/g, " ")
-  .trim();
+const fullAddress = [
+  `${form.street} ${form.external_number}`,
+  form.internal_number,
+  form.neighborhood,
+  form.postal_code,
+  "Tizayuca",
+  "Hidalgo",
+  "México",
+]
+.filter(Boolean)
+.join(", ");
 
     // 📍 OBTENER COORDENADAS
 let coordinates = null
@@ -499,15 +501,17 @@ lng:
   variant="outline"
   onClick={async () => {
 
-    const fullAddress = `
-${form.street} ${form.external_number}
-${form.internal_number || ""}
-${form.neighborhood}
-${form.postal_code || ""}
-Tizayuca, Hidalgo, México
-`
-.replace(/\s+/g, " ")
-.trim();
+const fullAddress = [
+  `${form.street} ${form.external_number}`,
+  form.internal_number,
+  form.neighborhood,
+  form.postal_code,
+  "Tizayuca",
+  "Hidalgo",
+  "México",
+]
+.filter(Boolean)
+.join(", ");
 
 if (
   !form.street ||
@@ -521,6 +525,8 @@ if (
 
   return;
 }
+
+console.log("FULL ADDRESS:", fullAddress);
 
 const coords =
   await getCoordinates(
