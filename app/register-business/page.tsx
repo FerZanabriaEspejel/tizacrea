@@ -22,6 +22,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import dynamic from "next/dynamic";
+
+const BusinessMap = dynamic(
+  () => import("@/components/BusinessMap"),
+  {
+    ssr: false,
+  }
+);
+
 const categories = [
   "Alimentos y bebidas",
   "Comercio al por menor (Retail)",
@@ -560,8 +569,8 @@ if (
 )}
 
 <Button
-  type="button"
-  className="w-full bg-orange-500 hover:bg-orange-600"
+ type="button"
+  className="w-full mt-2 bg-orange-500 hover:bg-orange-600"
   onClick={() => {
 
     if (!navigator.geolocation) {
@@ -588,6 +597,8 @@ if (
         );
       },
 
+
+      
       () => {
 
         toast.error(
@@ -605,13 +616,43 @@ if (
 
 {form.lat && form.lng && (
 
-  <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+  <>
 
-    <p className="text-green-700 font-medium">
-      ✅ Ubicación obtenida correctamente
-    </p>
+    <div className="bg-green-50 border border-green-200 rounded-xl p-3">
 
-  </div>
+      <p className="text-green-700 font-medium">
+        ✅ Ubicación obtenida correctamente
+      </p>
+
+      <a
+        href={`https://www.google.com/maps?q=${form.lat},${form.lng}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-block mt-2 text-sm text-blue-600 underline"
+      >
+        Ver ubicación capturada
+      </a>
+
+    </div>
+
+    <div className="rounded-2xl overflow-hidden border mt-3">
+
+      <BusinessMap
+        businesses={[
+          {
+            id: 0,
+            name: "Tu negocio",
+            category: "Ubicación",
+            address: "Ubicación seleccionada",
+            lat: form.lat,
+            lng: form.lng,
+          },
+        ]}
+      />
+
+    </div>
+
+  </>
 
 )}
 
