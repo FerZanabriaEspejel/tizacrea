@@ -44,25 +44,32 @@ export default function MapPage() {
   const [search, setSearch] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Todos")
 
+  // 🔥 FETCH SEGURO
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase
         .from("businesses")
         .select("id, name, lat, lng, category, rating")
 
-      if (!error) setBusinesses(data || [])
+      if (error) {
+        console.error("Supabase error:", error)
+        return
+      }
+
+      setBusinesses(data || [])
     }
 
     fetchData()
   }, [])
 
-  // 🧠 FUSE SAFE (evita crash cuando no hay data)
+  // 🧠 FUSE SAFE
   const fuse = useMemo(() => {
-    if (!businesses || businesses.length === 0) return null
+    if (!businesses?.length) return null
 
     return new Fuse(businesses, {
       keys: ["name", "category"],
-      threshold: 0.4,
+      threshold: 0.5,
+      ignoreLocation: true,
     })
   }, [businesses])
 
@@ -87,23 +94,42 @@ export default function MapPage() {
 
     return base.filter((b) => {
       if (!b) return false
+
+      const category = b.category ?? "Otro"
+
       if (selectedCategory === "Todos") return true
-      return b.category === selectedCategory
+
+      return category === selectedCategory
     })
   }, [searchResults, selectedCategory])
+
+  // 🗺️ VALIDACIÓN FINAL PARA MAPA (CLAVE)
+  const safeBusinesses = useMemo(() => {
+    return filteredBusinesses.filter((b) => {
+      return (
+        b &&
+        typeof b.lat === "number" &&
+        typeof b.lng === "number" &&
+        !isNaN(b.lat) &&
+        !isNaN(b.lng)
+      )
+    })
+  }, [filteredBusinesses])
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-sky-50 to-orange-50">
 
       {/* HEADER */}
       <section className="max-w-6xl mx-auto px-6 pt-28 pb-10">
+
         <h1 className="text-4xl font-bold text-foreground">
           Mapa de negocios
         </h1>
 
         <p className="text-muted-foreground mt-2">
-          Explora negocios cerca de ti en Tizayuca y encuentra lo que necesitas más rápido.
+          Explora negocios cerca de ti en Tizayuca.
         </p>
+
       </section>
 
       {/* SEARCH */}
@@ -116,7 +142,7 @@ export default function MapPage() {
         />
       </section>
 
-      {/* CATEGORIES (DESPLEGABLE) */}
+      {/* CATEGORÍAS */}
       <section className="max-w-6xl mx-auto px-6 pb-6">
 
         <details className="bg-white border rounded-xl p-3 shadow-sm">
@@ -152,7 +178,7 @@ export default function MapPage() {
 
           <div className="w-full md:w-[90%] lg:w-[85%]">
 
-            <MapComponent businesses={filteredBusinesses} />
+            <MapComponent businesses={safeBusinesses} />
 
           </div>
 
