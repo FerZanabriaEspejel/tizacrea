@@ -56,22 +56,37 @@ export default function MapPage() {
     fetchData()
   }, [])
 
-  // 🔍 BUSCADOR INTELIGENTE
+  // 🧠 FUSE SAFE (evita crash cuando no hay data)
   const fuse = useMemo(() => {
+    if (!businesses || businesses.length === 0) return null
+
     return new Fuse(businesses, {
       keys: ["name", "category"],
       threshold: 0.4,
     })
   }, [businesses])
 
+  // 🔍 BUSCADOR SEGURO
   const searchResults = useMemo(() => {
-    if (!search) return businesses
-    return fuse.search(search).map((r) => r.item)
+    try {
+      if (!search || search.trim() === "") return businesses ?? []
+      if (!fuse) return businesses ?? []
+
+      const results = fuse.search(search.trim())
+
+      return results.map((r) => r.item).filter(Boolean)
+    } catch (error) {
+      console.error("Search error:", error)
+      return businesses ?? []
+    }
   }, [search, fuse, businesses])
 
-  // 🎯 FILTRO POR CATEGORÍA
+  // 🎯 FILTRO POR CATEGORÍA SEGURO
   const filteredBusinesses = useMemo(() => {
-    return searchResults.filter((b) => {
+    const base = searchResults ?? []
+
+    return base.filter((b) => {
+      if (!b) return false
       if (selectedCategory === "Todos") return true
       return b.category === selectedCategory
     })
@@ -80,11 +95,8 @@ export default function MapPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-sky-50 to-orange-50">
 
-      {/* NAVBAR YA GLOBAL */}
-      
       {/* HEADER */}
       <section className="max-w-6xl mx-auto px-6 pt-28 pb-10">
-
         <h1 className="text-4xl font-bold text-foreground">
           Mapa de negocios
         </h1>
@@ -92,7 +104,6 @@ export default function MapPage() {
         <p className="text-muted-foreground mt-2">
           Explora negocios cerca de ti en Tizayuca y encuentra lo que necesitas más rápido.
         </p>
-
       </section>
 
       {/* SEARCH */}
