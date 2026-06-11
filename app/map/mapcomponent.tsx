@@ -11,12 +11,18 @@ type Business = {
   category?: string
 }
 
+const TIZAYUCA = {
+  lat: 19.8333,
+  lng: -98.9833,
+}
+
 export default function MapComponent({
   businesses,
 }: {
   businesses: Business[]
 }) {
   const mapRef = useRef<any>(null)
+  const leafletMapRef = useRef<any>(null)
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -25,14 +31,22 @@ export default function MapComponent({
       const L = (await import("leaflet")).default
       await import("leaflet.markercluster")
 
+      // 🔥 evitar doble mapa
       if (mapRef.current) {
         mapRef.current.remove()
       }
 
-      const map = L.map("map").setView([19.4326, -99.1332], 12)
-      mapRef.current = map
+      const map = L.map("map").setView(
+        [TIZAYUCA.lat, TIZAYUCA.lng],
+        13
+      )
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
+      mapRef.current = map
+      leafletMapRef.current = map
+
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      ).addTo(map)
 
       const clusterGroup = (L as any).markerClusterGroup()
 
@@ -54,14 +68,38 @@ export default function MapComponent({
       })
 
       map.addLayer(clusterGroup)
+
+      // 📡 listener para botón externo
+      window.addEventListener("go-tizayuca", () => {
+        map.setView([TIZAYUCA.lat, TIZAYUCA.lng], 13)
+      })
     }
 
     loadMap()
+
+    return () => {
+      mapRef.current?.remove()
+    }
   }, [businesses])
 
   return (
-    <div className="h-[75vh] w-full rounded-xl overflow-hidden border shadow">
-      <div id="map" className="h-full w-full" />
+    <div className="space-y-3">
+
+      {/* 🔘 BOTÓN UI */}
+      <button
+        onClick={() =>
+          window.dispatchEvent(new Event("go-tizayuca"))
+        }
+        className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+      >
+        📍 Ir a Tizayuca
+      </button>
+
+      {/* 🗺️ MAPA */}
+      <div className="h-[75vh] w-full rounded-xl overflow-hidden border shadow">
+        <div id="map" className="h-full w-full" />
+      </div>
+
     </div>
   )
 }
