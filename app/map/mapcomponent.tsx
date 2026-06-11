@@ -1,9 +1,7 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import "leaflet/dist/leaflet.css"
-
-import L from "leaflet"
 
 type Business = {
   id: string | number
@@ -13,51 +11,52 @@ type Business = {
   category?: string
 }
 
-const blueIcon = new L.Icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-})
-
 export default function MapComponent({
   businesses,
 }: {
   businesses: Business[]
 }) {
+  const mapRef = useRef<any>(null)
+
   useEffect(() => {
     if (typeof window === "undefined") return
 
-    const L = require("leaflet")
-    require("leaflet.markercluster")
+    const loadMap = async () => {
+      const L = (await import("leaflet")).default
+      await import("leaflet.markercluster")
 
-    const container = L.DomUtil.get("map")
-
-    if (container != null) {
-      container._leaflet_id = null
-    }
-
-    const map = L.map("map").setView([19.4326, -99.1332], 12)
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
-
-    const clusterGroup = L.markerClusterGroup()
-
-    businesses.forEach((b) => {
-      if (b.lat && b.lng) {
-        const marker = L.marker([b.lat, b.lng], {
-          icon: blueIcon,
-        }).bindPopup(`<b>${b.name}</b>`)
-
-        clusterGroup.addLayer(marker)
+      if (mapRef.current) {
+        mapRef.current.remove()
       }
-    })
 
-    map.addLayer(clusterGroup)
+      const map = L.map("map").setView([19.4326, -99.1332], 12)
+      mapRef.current = map
 
-    return () => {
-      map.remove()
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map)
+
+      const clusterGroup = (L as any).markerClusterGroup()
+
+      const icon = new L.Icon({
+        iconUrl:
+          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+      })
+
+      businesses.forEach((b) => {
+        if (b.lat && b.lng) {
+          const marker = L.marker([b.lat, b.lng], { icon }).bindPopup(
+            `<b>${b.name}</b>`
+          )
+
+          clusterGroup.addLayer(marker)
+        }
+      })
+
+      map.addLayer(clusterGroup)
     }
+
+    loadMap()
   }, [businesses])
 
   return (
