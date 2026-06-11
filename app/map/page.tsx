@@ -56,7 +56,7 @@ export default function MapPage() {
     fetchData()
   }, [])
 
-  // 🔍 FUSE (búsqueda inteligente)
+  // 🔍 BUSCADOR INTELIGENTE
   const fuse = useMemo(() => {
     return new Fuse(businesses, {
       keys: ["name", "category"],
@@ -69,7 +69,7 @@ export default function MapPage() {
     return fuse.search(search).map((r) => r.item)
   }, [search, fuse, businesses])
 
-  // 🎯 filtro por categoría
+  // 🎯 FILTRO POR CATEGORÍA
   const filteredBusinesses = useMemo(() => {
     return searchResults.filter((b) => {
       if (selectedCategory === "Todos") return true
@@ -78,48 +78,77 @@ export default function MapPage() {
   }, [searchResults, selectedCategory])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <main className="min-h-screen bg-gradient-to-b from-background via-sky-50 to-orange-50">
 
+      {/* NAVBAR YA GLOBAL */}
+      
       {/* HEADER */}
-      <div className="p-4">
-        <h1 className="text-xl font-semibold">Mapa de Negocios</h1>
-        <p className="text-sm text-gray-500">
-          Explora negocios cerca de ti
+      <section className="max-w-6xl mx-auto px-6 pt-28 pb-10">
+
+        <h1 className="text-4xl font-bold text-foreground">
+          Mapa de negocios
+        </h1>
+
+        <p className="text-muted-foreground mt-2">
+          Explora negocios cerca de ti en Tizayuca y encuentra lo que necesitas más rápido.
         </p>
-      </div>
+
+      </section>
 
       {/* SEARCH */}
-      <div className="px-4 pb-2">
+      <section className="max-w-6xl mx-auto px-6 pb-3">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar negocios..."
-          className="border px-3 py-2 rounded-lg w-full max-w-md"
+          className="border px-3 py-2 rounded-lg w-full md:w-80"
         />
-      </div>
+      </section>
 
-      {/* CATEGORIES */}
-      <div className="flex gap-2 flex-wrap px-4 pb-4">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-3 py-1 rounded-full text-sm border ${
-              selectedCategory === cat
-                ? "bg-blue-500 text-white"
-                : "bg-white"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+      {/* CATEGORIES (DESPLEGABLE) */}
+      <section className="max-w-6xl mx-auto px-6 pb-6">
 
-      {/* MAP */}
-      <div className="flex-1 px-4 pb-4">
-        <MapComponent businesses={filteredBusinesses} />
-      </div>
+        <details className="bg-white border rounded-xl p-3 shadow-sm">
 
-    </div>
+          <summary className="cursor-pointer font-medium">
+            Filtrar por categoría
+          </summary>
+
+          <div className="flex gap-2 flex-wrap mt-3">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1 rounded-full text-sm border transition ${
+                  selectedCategory === cat
+                    ? "bg-blue-500 text-white"
+                    : "bg-white hover:bg-gray-100"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+        </details>
+
+      </section>
+
+      {/* MAPA */}
+      <section className="max-w-6xl mx-auto px-6 pb-20">
+
+        <div className="flex justify-center">
+
+          <div className="w-full md:w-[90%] lg:w-[85%]">
+
+            <MapComponent businesses={filteredBusinesses} />
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
   )
 }
