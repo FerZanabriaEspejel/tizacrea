@@ -22,80 +22,92 @@ export default function MapComponent({
   businesses: Business[]
 }) {
   const mapRef = useRef<any>(null)
-  const leafletMapRef = useRef<any>(null)
 
   useEffect(() => {
     if (typeof window === "undefined") return
 
+    let map: any
+
     const loadMap = async () => {
       const L = (await import("leaflet")).default
-      await import("leaflet.markercluster")
 
-      // 🔥 evitar doble mapa
+      // destruir mapa anterior
       if (mapRef.current) {
         mapRef.current.remove()
+        mapRef.current = null
       }
 
-      const map = L.map("map").setView(
+      map = L.map("map").setView(
         [TIZAYUCA.lat, TIZAYUCA.lng],
         13
       )
 
       mapRef.current = map
-      leafletMapRef.current = map
 
       L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution: "© OpenStreetMap",
+        }
       ).addTo(map)
-
-      const clusterGroup = (L as any).markerClusterGroup()
 
       const icon = new L.Icon({
         iconUrl:
           "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+        shadowUrl:
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
         iconSize: [25, 41],
         iconAnchor: [12, 41],
       })
 
+      console.log("Negocios recibidos:", businesses)
+
       businesses.forEach((b) => {
-        if (b.lat && b.lng) {
-          const marker = L.marker([b.lat, b.lng], { icon }).bindPopup(
-            `<b>${b.name}</b>`
-          )
+        const lat = Number(b.lat)
+        const lng = Number(b.lng)
 
-          clusterGroup.addLayer(marker)
+        if (
+          isNaN(lat) ||
+          isNaN(lng)
+        ) {
+          return
         }
-      })
 
-      map.addLayer(clusterGroup)
-
-      // 📡 listener para botón externo
-      window.addEventListener("go-tizayuca", () => {
-        map.setView([TIZAYUCA.lat, TIZAYUCA.lng], 13)
+        L.marker([lat, lng], { icon })
+          .addTo(map)
+          .bindPopup(`<b>${b.name}</b>`)
       })
     }
 
     loadMap()
 
     return () => {
-      mapRef.current?.remove()
+      if (mapRef.current) {
+        mapRef.current.remove()
+        mapRef.current = null
+      }
     }
   }, [businesses])
+
+  const goToTizayuca = () => {
+    if (!mapRef.current) return
+
+    mapRef.current.setView(
+      [TIZAYUCA.lat, TIZAYUCA.lng],
+      13
+    )
+  }
 
   return (
     <div className="space-y-3">
 
-      {/* 🔘 BOTÓN UI */}
       <button
-        onClick={() =>
-          window.dispatchEvent(new Event("go-tizayuca"))
-        }
+        onClick={goToTizayuca}
         className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
       >
         📍 Ir a Tizayuca
       </button>
 
-      {/* 🗺️ MAPA */}
       <div className="h-[75vh] w-full rounded-xl overflow-hidden border shadow">
         <div id="map" className="h-full w-full" />
       </div>
