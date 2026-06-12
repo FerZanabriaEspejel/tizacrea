@@ -45,25 +45,33 @@ export default function MapPage() {
   const [selectedCategory, setSelectedCategory] = useState("Todos")
 
   // 🔥 FETCH SEGURO
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase
-  .from("businesses")
-  .select("*")
+ useEffect(() => {
+  const fetchData = async () => {
+    const { data, error } = await supabase
+      .from("businesses")
+      .select("*")
 
-console.log("DATA:", data)
-console.log("ERROR:", error)
+    console.log(
+      data?.map((b) => ({
+        id: b.id,
+        name: b.name,
+        lat: b.lat,
+        lng: b.lng,
+      }))
+    )
 
-      if (error) {
-        console.error("Supabase error:", error)
-        return
-      }
+    console.log("ERROR:", error)
 
-      setBusinesses(data || [])
+    if (error) {
+      console.error(error)
+      return
     }
 
-    fetchData()
-  }, [])
+    setBusinesses(data || [])
+  }
+
+  fetchData()
+}, [])
 
   // 🧠 FUSE SAFE
   const fuse = useMemo(() => {
