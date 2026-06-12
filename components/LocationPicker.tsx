@@ -6,6 +6,7 @@ import {
   MapContainer,
   TileLayer,
   Marker,
+  useMapEvents,
 } from "react-leaflet";
 
 import L from "leaflet";
@@ -30,13 +31,34 @@ type Props = {
   ) => void;
 };
 
+function MapClickHandler({
+  onChange,
+}: {
+  onChange: (
+    lat: number,
+    lng: number
+  ) => void;
+}) {
+  useMapEvents({
+    click(e) {
+      onChange(
+        e.latlng.lat,
+        e.latlng.lng
+      );
+    },
+  });
+
+  return null;
+}
+
 export default function LocationPicker({
   lat,
   lng,
   onChange,
 }: Props) {
 
-  const markerRef = useRef<L.Marker>(null);
+  const markerRef =
+    useRef<L.Marker>(null);
 
   return (
 
@@ -47,6 +69,10 @@ export default function LocationPicker({
         zoom={18}
         className="w-full h-full"
       >
+
+        <MapClickHandler
+          onChange={onChange}
+        />
 
         <TileLayer
           attribution="&copy; OpenStreetMap"
