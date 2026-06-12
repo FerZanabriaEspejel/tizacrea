@@ -83,9 +83,12 @@ export default function RegisterBusinessPage() {
     phone: "",
     description: "",
     google_maps_url: "",
+    
 
-     lat: null as number | null,
-  lng: null as number | null,
+    lat: 19.8333,
+    lng: -98.9833,
+
+  location_source: "auto",
 
     business_hours: {
 
@@ -384,35 +387,38 @@ if (
 
     console.log("FORM ANTES DE GUARDAR:", form)
     // 💾 INSERT
-  const { error } = await supabase
+ const { error } = await supabase
   .from("businesses")
-  
   .insert([
     {
-  owner_id: user.id,
+      owner_id: user.id,
 
-  name: form.name,
-  category: form.category,
-  address: fullAddress,
-  phone: form.phone,
-  description: form.description,
+      name: form.name,
+      category: form.category,
+      address: fullAddress,
+      phone: form.phone,
+      description: form.description,
 
-  business_hours: form.business_hours,
-  socials: filteredSocials,
-  image_url: imageUrl,
+      business_hours: form.business_hours,
+      socials: filteredSocials,
+      image_url: imageUrl,
 
-  google_maps_url: form.google_maps_url,
+      google_maps_url: form.google_maps_url,
 
-  lat:
-    form.lat ??
-    coordinates?.lat ??
-    null,
+      // 👇 NUEVO
+      location_source:
+        form.location_source,
 
-  lng:
-    form.lng ??
-    coordinates?.lng ??
-    null,
-},
+      lat:
+        form.lat ??
+        coordinates?.lat ??
+        null,
+
+      lng:
+        form.lng ??
+        coordinates?.lng ??
+        null,
+    },
   ]);
 
    if (error) {
@@ -561,6 +567,10 @@ if (
   onChange={handleChange}
 />
 
+<p className="text-xs text-muted-foreground">
+  Google Maps → Compartir → Copiar enlace → Pegar aquí
+</p>
+
 {form.google_maps_url && (
 
   <a
@@ -648,6 +658,43 @@ if (
       lng={form.lng}
       onChange={(lat, lng) => {
 
+        <div className="mt-4 space-y-2">
+
+  <label className="font-medium">
+    Ubicación principal para clientes
+  </label>
+
+  <select
+    value={form.location_source}
+    onChange={(e) =>
+      setForm({
+        ...form,
+        location_source: e.target.value,
+      })
+    }
+    className="w-full border rounded-lg p-2"
+  >
+
+    <option value="auto">
+      Automático (Recomendado)
+    </option>
+
+    <option value="google_maps">
+      Google Maps
+    </option>
+
+    <option value="pin">
+      Pin del mapa
+    </option>
+
+  </select>
+
+  <p className="text-xs text-muted-foreground">
+    Automático usa Google Maps si existe. Si no existe, usa la ubicación seleccionada en el mapa.
+  </p>
+
+</div>
+
           console.log("LOCATION PICKER:", lat, lng)
 
         setForm({
@@ -666,12 +713,6 @@ if (
   </div>
 
 )}
-
-<p className="text-xs text-muted-foreground">
-  Google Maps → Compartir → Copiar enlace → Pegar aquí
-</p>
-
-
 
 
               {/* PHONE */}
