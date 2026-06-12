@@ -24,7 +24,10 @@ import {
 
 import dynamic from "next/dynamic";
 
-
+const TIZAYUCA = {
+  lat: 19.8333,
+  lng: -98.9833,
+}
 
 const BusinessMap = dynamic(
   () => import("@/components/BusinessMap"),
@@ -656,8 +659,8 @@ if (
 
     <Button
       type="button"
+  className="w-full mt-2 bg-orange-500 hover:bg-orange-600"
       variant="outline"
-      className="w-full"
     >
       📍 Abrir Google Maps
     </Button>
