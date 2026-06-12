@@ -85,8 +85,8 @@ export default function RegisterBusinessPage() {
     google_maps_url: "",
     
 
-    lat: 19.8333,
-    lng: -98.9833,
+      lat: 19.8333,
+      lng: -98.9833,
 
   location_source: "auto",
 
@@ -278,6 +278,56 @@ useEffect(() => {
       },
     ]);
   }
+
+  const handleGoogleMapsLocation = async () => {
+
+  if (!form.google_maps_url) {
+
+    toast.error(
+      "Pega primero un enlace de Google Maps"
+    )
+
+    return
+  }
+
+  try {
+
+    const match =
+      form.google_maps_url.match(
+        /@(-?\d+\.\d+),(-?\d+\.\d+)/
+      )
+
+    if (!match) {
+
+      toast.error(
+        "No pudimos leer las coordenadas del enlace"
+      )
+
+      return
+    }
+
+    const lat = Number(match[1])
+    const lng = Number(match[2])
+
+    setForm({
+      ...form,
+      lat,
+      lng,
+    })
+
+    toast.success(
+      "Ubicación cargada correctamente 📍"
+    )
+
+  } catch {
+
+    toast.error(
+      "No pudimos procesar el enlace"
+    )
+
+  }
+
+}
 
   // 🚀 SUBMIT
   const handleSubmit = async (
@@ -576,6 +626,10 @@ if (
   onChange={handleChange}
 />
 
+<p className="text-xs text-muted-foreground">
+  Google Maps → Compartir → Copiar enlace → Pegar aquí
+</p>
+
 <Input
   name="google_maps_url"
   placeholder="Link de Google Maps (opcional)"
@@ -583,9 +637,14 @@ if (
   onChange={handleChange}
 />
 
-<p className="text-xs text-muted-foreground">
-  Google Maps → Compartir → Copiar enlace → Pegar aquí
-</p>
+<Button
+  type="button"
+  variant="outline"
+  className="w-full"
+  onClick={handleGoogleMapsLocation}
+>
+  📍 Localizar URL en el mapa
+</Button>
 
 {form.google_maps_url && (
 
