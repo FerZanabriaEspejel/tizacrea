@@ -286,18 +286,34 @@ useEffect(() => {
 
     e.preventDefault();
 
-    if (
-  !form.name ||
-  !form.category ||
-  !form.street ||
-  !form.external_number ||
-  !form.neighborhood
-) {
+   const missingFields = [];
 
-      alert("Completa los campos obligatorios");
+if (!form.name)
+  missingFields.push("Nombre del negocio");
 
-      return;
+if (!form.category)
+  missingFields.push("Categoría");
+
+if (!form.street)
+  missingFields.push("Calle");
+
+if (!form.external_number)
+  missingFields.push("Número exterior");
+
+if (!form.neighborhood)
+  missingFields.push("Colonia");
+
+if (missingFields.length > 0) {
+
+  toast.error(
+    "Campos obligatorios faltantes",
+    {
+      description: missingFields.join(", "),
     }
+  );
+
+  return;
+}
 
     // 🔐 USER
     const {
