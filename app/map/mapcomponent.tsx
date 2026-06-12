@@ -61,8 +61,14 @@ export default function MapComponent({
       })
 
       console.log("Negocios recibidos:", businesses)
+      
 
       businesses.forEach((b) => {
+        console.log(
+  b.name,
+  b.lat,
+  b.lng
+)
         const lat = Number(b.lat)
         const lng = Number(b.lng)
 
