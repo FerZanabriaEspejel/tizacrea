@@ -382,9 +382,11 @@ if (
         social.url.trim() !== ""
     );
 
+    console.log("FORM ANTES DE GUARDAR:", form)
     // 💾 INSERT
   const { error } = await supabase
   .from("businesses")
+  
   .insert([
     {
   owner_id: user.id,
@@ -645,6 +647,8 @@ if (
       lat={form.lat}
       lng={form.lng}
       onChange={(lat, lng) => {
+
+          console.log("LOCATION PICKER:", lat, lng)
 
         setForm({
           ...form,
