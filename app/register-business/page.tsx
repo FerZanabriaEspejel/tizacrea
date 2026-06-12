@@ -519,9 +519,9 @@ if (
 
               </select>
 
-              {/* ADDRESS */}
+{/* ADDRESS */}
 
-              <Input
+<Input
   name="street"
   placeholder="Calle *"
   value={form.street}
@@ -592,7 +592,7 @@ if (
 )}
 
 <Button
- type="button"
+  type="button"
   className="w-full mt-2 bg-orange-500 hover:bg-orange-600"
   onClick={() => {
 
@@ -600,9 +600,9 @@ if (
 
       toast.error(
         "Tu navegador no soporta geolocalización"
-      );
+      )
 
-      return;
+      return
     }
 
     navigator.geolocation.getCurrentPosition(
@@ -613,24 +613,23 @@ if (
           ...form,
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-        });
+        })
 
         toast.success(
           "Ubicación obtenida 📍"
-        );
+        )
+
       },
 
-
-      
       () => {
 
         toast.error(
           "No pudimos obtener tu ubicación"
-        );
+        )
 
       }
 
-    );
+    )
 
   }}
 >
@@ -658,62 +657,66 @@ if (
       lng={form.lng}
       onChange={(lat, lng) => {
 
-        <div className="mt-4 space-y-2">
-
-  <label className="font-medium">
-    Ubicación principal para clientes
-  </label>
-
-  <select
-    value={form.location_source}
-    onChange={(e) =>
-      setForm({
-        ...form,
-        location_source: e.target.value,
-      })
-    }
-    className="w-full border rounded-lg p-2"
-  >
-
-    <option value="auto">
-      Automático (Recomendado)
-    </option>
-
-    <option value="google_maps">
-      Google Maps
-    </option>
-
-    <option value="pin">
-      Pin del mapa
-    </option>
-
-  </select>
-
-  <p className="text-xs text-muted-foreground">
-    Automático usa Google Maps si existe. Si no existe, usa la ubicación seleccionada en el mapa.
-  </p>
-
-</div>
-
-          console.log("LOCATION PICKER:", lat, lng)
+        console.log(
+          "LOCATION PICKER:",
+          lat,
+          lng
+        )
 
         setForm({
           ...form,
           lat,
           lng,
-        });
+        })
 
         toast.success(
           "Ubicación actualizada 📍"
-        );
+        )
 
       }}
     />
 
+    <div className="mt-4 space-y-2">
+
+      <label className="font-medium">
+        Ubicación principal para clientes
+      </label>
+
+      <select
+        value={form.location_source}
+        onChange={(e) =>
+          setForm({
+            ...form,
+            location_source: e.target.value,
+          })
+        }
+        className="w-full border rounded-lg p-2"
+      >
+
+        <option value="auto">
+          Automático (Recomendado)
+        </option>
+
+        <option value="google_maps">
+          Google Maps
+        </option>
+
+        <option value="pin">
+          Pin del mapa
+        </option>
+
+      </select>
+
+      <p className="text-xs text-muted-foreground">
+        Automático usa Google Maps si existe.
+        Si no existe, usa la ubicación seleccionada en el mapa.
+      </p>
+
+    </div>
+
   </div>
 
 )}
-
 
               {/* PHONE */}
               <Input
