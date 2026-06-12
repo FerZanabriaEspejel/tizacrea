@@ -48,8 +48,11 @@ export default function MapPage() {
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase
-        .from("businesses")
-        .select("id, name, lat, lng, category, rating")
+  .from("businesses")
+  .select("*")
+
+console.log("DATA:", data)
+console.log("ERROR:", error)
 
       if (error) {
         console.error("Supabase error:", error)
