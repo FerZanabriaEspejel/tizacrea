@@ -534,25 +534,6 @@ lng: form.lng,
   onChange={handleChange}
 />
 
-{form.google_maps_url && (
-
-  <a
-    href={form.google_maps_url}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-
-    <Button
-      type="button"
-      className="w-full mt-2 bg-orange-500 hover:bg-orange-600 text-white"
-    >
-      📍 Abrir Google Maps
-    </Button>
-
-  </a>
-
-)}
-
 
 <div className="space-y-2">
 
