@@ -554,51 +554,73 @@ lng: form.lng,
 )}
 
 
+<div className="space-y-2">
 
-<Button
-  type="button"
-  className="w-full bg-orange-500 hover:bg-orange-600"
-  onClick={() => {
+  {form.google_maps_url && (
 
-    if (!navigator.geolocation) {
+    <a
+      href={form.google_maps_url}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
 
-      toast.error(
-        "Tu navegador no soporta geolocalización"
-      );
+      <Button
+        type="button"
+        className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+      >
+        📍 Abrir Google Maps
+      </Button>
 
-      return;
-    }
+    </a>
 
-    navigator.geolocation.getCurrentPosition(
+  )}
 
-      (position) => {
+  <Button
+    type="button"
+    className="w-full bg-orange-500 hover:bg-orange-600"
+    onClick={() => {
 
-        setForm({
-          ...form,
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-
-        toast.success(
-          "Ubicación obtenida 📍"
-        );
-
-      },
-
-      () => {
+      if (!navigator.geolocation) {
 
         toast.error(
-          "No pudimos obtener tu ubicación"
+          "Tu navegador no soporta geolocalización"
         );
 
+        return;
       }
 
-    );
+      navigator.geolocation.getCurrentPosition(
 
-  }}
->
-  📍 Usar mi ubicación actual
-</Button>
+        (position) => {
+
+          setForm({
+            ...form,
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+
+          toast.success(
+            "Ubicación obtenida 📍"
+          );
+
+        },
+
+        () => {
+
+          toast.error(
+            "No pudimos obtener tu ubicación"
+          );
+
+        }
+
+      );
+
+    }}
+  >
+    📍 Usar mi ubicación actual
+  </Button>
+
+</div>
 
 {form.lat && form.lng && (
 
