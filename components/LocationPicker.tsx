@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 import {
   MapContainer,
   TileLayer,
   Marker,
   useMapEvents,
+  useMap,
 } from "react-leaflet";
 
 import L from "leaflet";
@@ -39,14 +40,41 @@ function MapClickHandler({
     lng: number
   ) => void;
 }) {
+
   useMapEvents({
+
     click(e) {
+
       onChange(
         e.latlng.lat,
         e.latlng.lng
       );
+
     },
+
   });
+
+  return null;
+}
+
+function RecenterMap({
+  lat,
+  lng,
+}: {
+  lat: number;
+  lng: number;
+}) {
+
+  const map = useMap();
+
+  useEffect(() => {
+
+    map.setView(
+      [lat, lng],
+      map.getZoom()
+    );
+
+  }, [lat, lng, map]);
 
   return null;
 }
@@ -66,7 +94,8 @@ export default function LocationPicker({
 
       <MapContainer
         center={[lat, lng]}
-        zoom={18}
+        zoom={17}
+        scrollWheelZoom={true}
         className="w-full h-full"
       >
 
@@ -74,8 +103,13 @@ export default function LocationPicker({
           onChange={onChange}
         />
 
+        <RecenterMap
+          lat={lat}
+          lng={lng}
+        />
+
         <TileLayer
-          attribution="&copy; OpenStreetMap"
+          attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
@@ -84,6 +118,7 @@ export default function LocationPicker({
           draggable={true}
           ref={markerRef}
           eventHandlers={{
+
             dragend() {
 
               const marker =
@@ -98,7 +133,9 @@ export default function LocationPicker({
                 pos.lat,
                 pos.lng
               );
+
             },
+
           }}
         />
 
