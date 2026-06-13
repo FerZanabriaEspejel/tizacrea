@@ -40,13 +40,17 @@ const categories = [
 ]
 
 export default function MapPage() {
-  const [businesses, setBusinesses] = useState<Business[]>([])
+const [businesses, setBusinesses] =
+  useState<Business[]>([])
 
-  const [search, setSearch] = useState("")
+const [search, setSearch] =
+  useState("")
 
-  const [searchInput, setSearchInput] = useState("")
+const [searchInput, setSearchInput] =
+  useState("")
 
-  const [selectedCategory, setSelectedCategory] = useState("Todos")
+const [selectedCategory, setSelectedCategory] =
+  useState("Todos")
 
   // 🔥 FETCH SEGURO
  useEffect(() => {
@@ -78,62 +82,141 @@ export default function MapPage() {
 }, [])
 
   // 🧠 FUSE SAFE
-  const fuse = useMemo(() => {
-    if (!businesses?.length) return null
+const fuse = useMemo(() => {
 
-    return new Fuse(businesses, {
-  keys: [
-    "name",
-    "category",
-    "address",
-  ],
-  threshold: 0.3,
-  ignoreLocation: true,
-})
-  }, [businesses])
+  if (!businesses.length)
+    return null
+
+  return new Fuse(
+    businesses,
+    {
+      keys: [
+        "name",
+        "category",
+      ],
+
+      threshold: 0.2,
+
+      ignoreLocation: true,
+
+      minMatchCharLength: 2,
+    }
+  )
+
+}, [businesses])
 
   // 🔍 BUSCADOR SEGURO
-  const searchResults = useMemo(() => {
-    try {
-      if (!search || search.trim() === "") return businesses ?? []
-      if (!fuse) return businesses ?? []
+const searchResults = useMemo(() => {
 
-      const results = fuse.search(search.trim())
+  try {
 
-      return results.map((r) => r.item).filter(Boolean)
-    } catch (error) {
-      console.error("Search error:", error)
-      return businesses ?? []
+    if (!search.trim()) {
+
+      return businesses
+
     }
-  }, [search, fuse, businesses])
+
+    if (!fuse) {
+
+      return businesses
+
+    }
+
+    const results =
+      fuse.search(
+        search.trim()
+      )
+
+    console.log(
+      "BUSCANDO:",
+      search
+    )
+
+    console.log(
+      "RESULTADOS:",
+      results
+    )
+
+    return results.map(
+      (r) => r.item
+    )
+
+  } catch (error) {
+
+    console.error(
+      "Search error:",
+      error
+    )
+
+    return businesses
+
+  }
+
+}, [
+  search,
+  fuse,
+  businesses,
+])
 
   // 🎯 FILTRO POR CATEGORÍA SEGURO
-  const filteredBusinesses = useMemo(() => {
-    const base = searchResults ?? []
+const filteredBusinesses =
+  useMemo(() => {
 
-    return base.filter((b) => {
-      if (!b) return false
+    const base =
+      searchResults ?? []
 
-      const category = b.category ?? "Otro"
+    return base.filter(
+      (b) => {
 
-      if (selectedCategory === "Todos") return true
+        if (!b)
+          return false
 
-      return category === selectedCategory
-    })
-  }, [searchResults, selectedCategory])
+        const category =
+          b.category ??
+          "Otro"
+
+        if (
+          selectedCategory ===
+          "Todos"
+        )
+          return true
+
+        return (
+          category ===
+          selectedCategory
+        )
+
+      }
+    )
+
+  }, [
+    searchResults,
+    selectedCategory,
+  ])
 
   // 🗺️ VALIDACIÓN FINAL PARA MAPA (CLAVE)
-  const safeBusinesses = useMemo(() => {
-    return filteredBusinesses.filter((b) => {
-      return (
-        b &&
-        typeof b.lat === "number" &&
-        typeof b.lng === "number" &&
-        !isNaN(b.lat) &&
-        !isNaN(b.lng)
-      )
-    })
-  }, [filteredBusinesses])
+const safeBusinesses =
+  useMemo(() => {
+
+    return filteredBusinesses.filter(
+      (b) => {
+
+        return (
+          b &&
+          typeof b.lat ===
+            "number" &&
+          typeof b.lng ===
+            "number" &&
+          !isNaN(b.lat) &&
+          !isNaN(b.lng)
+        )
+
+      }
+    )
+
+  }, [
+    filteredBusinesses,
+  ])
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-sky-50 to-orange-50">
@@ -152,22 +235,29 @@ export default function MapPage() {
       </section>
 
 {/* SEARCH */}
+{/* SEARCH */}
 <section className="max-w-6xl mx-auto px-6 pb-3">
 
-  <div className="flex gap-2 w-full md:w-[500px]">
+  <div className="flex gap-2 w-full md:w-[600px]">
 
     <input
       value={searchInput}
       onChange={(e) =>
-        setSearchInput(e.target.value)
+        setSearchInput(
+          e.target.value
+        )
       }
-      placeholder="Buscar negocios ..."
+      placeholder="Buscar negocios..."
       className="border px-3 py-2 rounded-lg flex-1"
       onKeyDown={(e) => {
 
-        if (e.key === "Enter") {
+        if (
+          e.key === "Enter"
+        ) {
 
-          setSearch(searchInput)
+          setSearch(
+            searchInput
+          )
 
         }
 
@@ -176,17 +266,37 @@ export default function MapPage() {
 
     <button
       onClick={() =>
-        setSearch(searchInput)
+        setSearch(
+          searchInput
+        )
       }
       className="bg-orange-500 hover:bg-orange-600 text-white px-4 rounded-lg"
     >
       🔍
     </button>
 
+    <button
+      onClick={() => {
+
+        setSearch("")
+        setSearchInput("")
+
+      }}
+      className="border px-4 rounded-lg hover:bg-gray-100"
+    >
+      ✖
+    </button>
+
   </div>
 
   <p className="text-sm text-gray-500 mt-2">
-    Resultados encontrados: {safeBusinesses.length}
+
+    Resultados encontrados:
+
+    {" "}
+
+    {safeBusinesses.length}
+
   </p>
 
 </section>
