@@ -276,8 +276,59 @@ export default function EditBusinessPage() {
     ])
   }
 
-  // 💾 UPDATE
-  async function handleUpdate(
+// 🌍 GOOGLE MAPS URL
+const handleGoogleMapsLocation = async () => {
+
+  if (!form.google_maps_url) {
+
+    toast.error(
+      "Pega primero un enlace de Google Maps"
+    )
+
+    return
+  }
+
+  try {
+
+    const match =
+      form.google_maps_url.match(
+        /@(-?\d+\.\d+),(-?\d+\.\d+)/
+      )
+
+    if (!match) {
+
+      toast.error(
+        "No pudimos leer las coordenadas del enlace"
+      )
+
+      return
+    }
+
+    const lat = Number(match[1])
+    const lng = Number(match[2])
+
+    setForm({
+      ...form,
+      lat,
+      lng,
+    })
+
+    toast.success(
+      "Ubicación cargada correctamente 📍"
+    )
+
+  } catch {
+
+    toast.error(
+      "No pudimos procesar el enlace"
+    )
+
+  }
+
+}
+
+// 💾 UPDATE
+async function handleUpdate(
     e: React.FormEvent
   ) {
 
@@ -533,6 +584,26 @@ lng: form.lng,
   value={form.google_maps_url}
   onChange={handleChange}
 />
+
+<p className="text-xs text-muted-foreground">
+  Google Maps → Compartir → Copiar enlace → Pegar aquí
+</p>
+
+<Input
+  name="google_maps_url"
+  placeholder="Link de Google Maps (opcional)"
+  value={form.google_maps_url}
+  onChange={handleChange}
+/>
+
+<Button
+  type="button"
+  variant="outline"
+  className="w-full"
+  onClick={handleGoogleMapsLocation}
+>
+  📍 Localizar URL en el mapa
+</Button>
 
 
 <div>
