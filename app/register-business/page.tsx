@@ -646,26 +646,25 @@ if (
   className="w-full"
   onClick={handleGoogleMapsLocation}
 >
-  📍 Localizar URL en el mapa
+  📍 Localizar URL en el mapaa
 </Button>
 
 {form.google_maps_url && (
 
-  <a
-    href={form.google_maps_url}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
+<a
+  href={form.google_maps_url}
+  target="_blank"
+  rel="noopener noreferrer"
+>
 
-    <Button
-      type="button"
-  className="w-full mt-2 bg-orange-500 hover:bg-orange-600"
-      variant="outline"
-    >
-      📍 Abrir Google Maps
-    </Button>
+<Button
+  type="button"
+  className="w-full mt-2 bg-orange-500 hover:bg-orange-600 text-white"
+>
+  📍 Abrir Google Maps
+</Button>
 
-  </a>
+</a>
 
 )}
 
