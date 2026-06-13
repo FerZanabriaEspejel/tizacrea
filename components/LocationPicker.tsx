@@ -22,6 +22,17 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow.src,
 });
 
+const blueIcon = new L.Icon({
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+
+  shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
 type Props = {
   lat: number;
   lng: number;
@@ -116,6 +127,7 @@ export default function LocationPicker({
         <Marker
           position={[lat, lng]}
           draggable={true}
+          icon={blueIcon}
           ref={markerRef}
           eventHandlers={{
 
