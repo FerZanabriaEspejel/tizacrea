@@ -535,7 +535,7 @@ lng: form.lng,
 />
 
 
-<div className="space-y-2">
+<div>
 
   {form.google_maps_url && (
 
@@ -547,7 +547,7 @@ lng: form.lng,
 
       <Button
         type="button"
-        className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+        className="w-full mt-2 bg-orange-500 hover:bg-orange-600 text-white"
       >
         📍 Abrir Google Maps
       </Button>
@@ -558,7 +558,7 @@ lng: form.lng,
 
   <Button
     type="button"
-    className="w-full bg-orange-500 hover:bg-orange-600"
+    className="w-full mt-2 bg-orange-500 hover:bg-orange-600"
     onClick={() => {
 
       if (!navigator.geolocation) {
