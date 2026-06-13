@@ -76,6 +76,16 @@ export default function EditBusinessPage() {
   const [image, setImage] =
     useState<File | null>(null)
 
+  const orderedDays = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const
+
   const [form, setForm] = useState({
     name: "",
     category: "",
@@ -795,212 +805,159 @@ lng: form.lng,
                         Editar horarios
                       </Button>
 
-                    </DialogTrigger>
+</DialogTrigger>
 
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+<DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
 
-                      <DialogHeader>
+  <DialogHeader>
+    <DialogTitle>
+      Horarios del negocio
+    </DialogTitle>
+  </DialogHeader>
 
-                        <DialogTitle>
-                          Horarios del negocio
-                        </DialogTitle>
+  <div className="space-y-5 mt-4">
 
-                      </DialogHeader>
+    {orderedDays.map((day) => {
+      const schedule =
+        form.business_hours[
+          day as keyof typeof form.business_hours
+        ]
 
-                      <div className="space-y-5 mt-4">
+      return (
+        <div
+          key={day}
+          className="border rounded-2xl p-4 space-y-3"
+        >
 
-                        {Object.entries(
-                          form.business_hours
-                        ).map(
-                          (
-                            [
-                              day,
-                              schedule,
-                            ]: any
-                          ) => (
+          <div className="flex items-center justify-between">
 
-                            <div
-                              key={day}
-                              className="border rounded-2xl p-4 space-y-3"
-                            >
+            <h3 className="font-medium">
+              {daysInSpanish[day]}
+            </h3>
 
-                              <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-sm">
 
-                                <h3 className="font-medium">
-                                  {daysInSpanish[day]}
-                                </h3>
+              <input
+                type="checkbox"
+                checked={schedule.closed}
+                onChange={(e) => {
+                  setForm({
+                    ...form,
+                    business_hours: {
+                      ...form.business_hours,
+                      [day]: {
+                        ...schedule,
+                        closed: e.target.checked,
+                      },
+                    },
+                  })
+                }}
+              />
 
-                                <label className="flex items-center gap-2 text-sm">
+              Cerrado
+            </label>
+          </div>
 
-                                  <input
-                                    type="checkbox"
-                                    checked={
-                                      schedule.closed
-                                    }
-                                    onChange={(
-                                      e
-                                    ) => {
+          {!schedule.closed && (
+            <div className="grid grid-cols-2 gap-3">
 
-                                      setForm(
-                                        {
-                                          ...form,
+              <div>
+                <label className="text-sm text-muted-foreground">
+                  Apertura
+                </label>
 
-                                          business_hours:
-                                            {
-                                              ...form.business_hours,
+                <Input
+                  type="time"
+                  value={schedule.open}
+                  onChange={(e) => {
+                    setForm({
+                      ...form,
+                      business_hours: {
+                        ...form.business_hours,
+                        [day]: {
+                          ...schedule,
+                          open: e.target.value,
+                        },
+                      },
+                    })
+                  }}
+                />
+              </div>
 
-                                              [day]:
-                                                {
-                                                  ...schedule,
+              <div>
+                <label className="text-sm text-muted-foreground">
+                  Cierre
+                </label>
 
-                                                  closed:
-                                                    e.target.checked,
-                                                },
-                                            },
-                                        }
-                                      )
-                                    }}
-                                  />
+                <Input
+                  type="time"
+                  value={schedule.close}
+                  onChange={(e) => {
+                    setForm({
+                      ...form,
+                      business_hours: {
+                        ...form.business_hours,
+                        [day]: {
+                          ...schedule,
+                          close: e.target.value,
+                        },
+                      },
+                    })
+                  }}
+                />
+              </div>
 
-                                  Cerrado
+            </div>
+          )}
 
-                                </label>
+        </div>
+      )
+    })}
 
-                              </div>
+  </div>
 
-                              {!schedule.closed && (
-
-                                <div className="grid grid-cols-2 gap-3">
-
-                                  <div>
-
-                                    <label className="text-sm text-muted-foreground">
-                                      Apertura
-                                    </label>
-
-                                    <Input
-                                      type="time"
-                                      value={
-                                        schedule.open
-                                      }
-                                      onChange={(
-                                        e
-                                      ) => {
-
-                                        setForm(
-                                          {
-                                            ...form,
-
-                                            business_hours:
-                                              {
-                                                ...form.business_hours,
-
-                                                [day]:
-                                                  {
-                                                    ...schedule,
-
-                                                    open:
-                                                      e.target.value,
-                                                  },
-                                              },
-                                          }
-                                        )
-                                      }}
-                                    />
-
-                                  </div>
-
-                                  <div>
-
-                                    <label className="text-sm text-muted-foreground">
-                                      Cierre
-                                    </label>
-
-                                    <Input
-                                      type="time"
-                                      value={
-                                        schedule.close
-                                      }
-                                      onChange={(
-                                        e
-                                      ) => {
-
-                                        setForm(
-                                          {
-                                            ...form,
-
-                                            business_hours:
-                                              {
-                                                ...form.business_hours,
-
-                                                [day]:
-                                                  {
-                                                    ...schedule,
-
-                                                    close:
-                                                      e.target.value,
-                                                  },
-                                              },
-                                          }
-                                        )
-                                      }}
-                                    />
-
-                                  </div>
-
-                                </div>
-
-                              )}
-
-                            </div>
-
-                          )
-                        )}
-
-                      </div>
-
-                    </DialogContent>
-
-                  </Dialog>
-
-                </div>
+</DialogContent>
+</Dialog>
+</div>
 
                 {/* PREVIEW */}
-                <div className="bg-muted rounded-2xl p-4 space-y-2">
+<div className="bg-muted rounded-2xl p-4 space-y-2">
 
-                  {Object.entries(
-                    form.business_hours
-                  ).map(
-                    (
-                      [
-                        day,
-                        schedule,
-                      ]: any
-                    ) => (
+  {orderedDays.map((day) => {
 
-                      <div
-                        key={day}
-                        className="flex justify-between text-sm"
-                      >
+    const schedule =
+      form.business_hours[
+        day as keyof typeof form.business_hours
+      ]
 
-                        <span className="font-medium">
-                          {daysInSpanish[day]}
-                        </span>
+    return (
 
-                        <span>
+      <div
+        key={day}
+        className="flex justify-between text-sm"
+      >
 
-                          {schedule.closed
-                            ? "Cerrado"
-                            : `${schedule.open} - ${schedule.close}`}
+        <span className="font-medium">
+          {daysInSpanish[day]}
+        </span>
 
-                        </span>
+        <span>
 
-                      </div>
+          {schedule.closed
+            ? "Cerrado"
+            : `${schedule.open} - ${schedule.close}`}
 
-                    )
-                  )}
+        </span>
 
-                </div>
+      </div>
+
+    )
+
+  })}
+
+</div>
+
+              
 
               </div>
 
