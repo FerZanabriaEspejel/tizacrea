@@ -41,7 +41,11 @@ const categories = [
 
 export default function MapPage() {
   const [businesses, setBusinesses] = useState<Business[]>([])
+
   const [search, setSearch] = useState("")
+
+  const [searchInput, setSearchInput] = useState("")
+
   const [selectedCategory, setSelectedCategory] = useState("Todos")
 
   // 🔥 FETCH SEGURO
@@ -78,10 +82,14 @@ export default function MapPage() {
     if (!businesses?.length) return null
 
     return new Fuse(businesses, {
-      keys: ["name", "category"],
-      threshold: 0.5,
-      ignoreLocation: true,
-    })
+  keys: [
+    "name",
+    "category",
+    "address",
+  ],
+  threshold: 0.3,
+  ignoreLocation: true,
+})
   }, [businesses])
 
   // 🔍 BUSCADOR SEGURO
@@ -146,18 +154,34 @@ export default function MapPage() {
 {/* SEARCH */}
 <section className="max-w-6xl mx-auto px-6 pb-3">
 
-  <div className="relative w-full md:w-80">
-
-    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-      🔍
-    </span>
+  <div className="flex gap-2 w-full md:w-[500px]">
 
     <input
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      placeholder="Buscar negocios..."
-      className="border pl-10 pr-3 py-2 rounded-lg w-full"
+      value={searchInput}
+      onChange={(e) =>
+        setSearchInput(e.target.value)
+      }
+      placeholder="Buscar negocios ..."
+      className="border px-3 py-2 rounded-lg flex-1"
+      onKeyDown={(e) => {
+
+        if (e.key === "Enter") {
+
+          setSearch(searchInput)
+
+        }
+
+      }}
     />
+
+    <button
+      onClick={() =>
+        setSearch(searchInput)
+      }
+      className="bg-orange-500 hover:bg-orange-600 text-white px-4 rounded-lg"
+    >
+      🔍
+    </button>
 
   </div>
 
