@@ -143,15 +143,29 @@ export default function MapPage() {
 
       </section>
 
-      {/* SEARCH */}
-      <section className="max-w-6xl mx-auto px-6 pb-3">
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar negocios..."
-          className="border px-3 py-2 rounded-lg w-full md:w-80"
-        />
-      </section>
+{/* SEARCH */}
+<section className="max-w-6xl mx-auto px-6 pb-3">
+
+  <div className="relative w-full md:w-80">
+
+    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+      🔍
+    </span>
+
+    <input
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      placeholder="Buscar negocios..."
+      className="border pl-10 pr-3 py-2 rounded-lg w-full"
+    />
+
+  </div>
+
+  <p className="text-sm text-gray-500 mt-2">
+    Resultados encontrados: {safeBusinesses.length}
+  </p>
+
+</section>
 
       {/* CATEGORÍAS */}
       <section className="max-w-6xl mx-auto px-6 pb-6">
