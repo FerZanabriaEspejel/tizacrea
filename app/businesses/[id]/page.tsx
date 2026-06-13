@@ -71,6 +71,16 @@ export default function BusinessDetailPage() {
 
   const [business, setBusiness] = useState<Business | null>(null);
 
+  const orderedDays = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+]
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -196,28 +206,35 @@ export default function BusinessDetailPage() {
 
     <div className="space-y-1 text-sm">
 
-      {Object.entries(
-        business.business_hours
-      ).map(([day, schedule]: any) => (
+      {orderedDays.map((day) => {
 
-        <div
-          key={day}
-          className="flex justify-between border-b border-zinc-100 pb-1"
-        >
+  const schedule =
+    business.business_hours?.[day]
 
-          <span className="font-medium">
-            {daysInSpanish[day]}
-          </span>
+  if (!schedule) return null
 
-          <span>
-            {schedule.closed
-              ? "Cerrado"
-              : `${schedule.open} - ${schedule.close}`}
-          </span>
+  return (
 
-        </div>
+    <div
+      key={day}
+      className="flex justify-between border-b border-zinc-100 pb-1"
+    >
 
-      ))}
+      <span className="font-medium">
+        {daysInSpanish[day]}
+      </span>
+
+      <span>
+        {schedule.closed
+          ? "Cerrado"
+          : `${schedule.open} - ${schedule.close}`}
+      </span>
+
+    </div>
+
+  )
+
+})}
 
     </div>
 
