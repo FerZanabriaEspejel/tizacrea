@@ -81,7 +81,7 @@ export default function BusinessMap({
 
   return (
 
-    <div className="w-full h-[500px] rounded-3xl overflow-hidden shadow-xl border border-zinc-200">
+<div className="relative z-0 w-full h-[500px] rounded-3xl overflow-hidden shadow-xl border border-zinc-200">
 
       <MapContainer
         key={validBusinesses[0]?.id || "map"}

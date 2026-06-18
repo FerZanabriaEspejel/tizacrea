@@ -125,3 +125,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Leaflet */
+
+.leaflet-container {
+  z-index: 0 !important;
+}
+
+.leaflet-pane {
+  z-index: 1 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 10 !important;
+}

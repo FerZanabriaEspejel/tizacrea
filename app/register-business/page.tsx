@@ -45,6 +45,18 @@ const LocationPicker = dynamic(
   }
 );
 
+const orderedDays = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const
+
+
+
 const categories = [
   "Alimentos y bebidas",
   "Comercio al por menor (Retail)",
@@ -646,7 +658,7 @@ if (
   className="w-full"
   onClick={handleGoogleMapsLocation}
 >
-  📍 Localizar URL en el mapaa
+  📍 Localizar URL en el mapa
 </Button>
 
 {form.google_maps_url && (
@@ -755,7 +767,7 @@ if (
 
     <div className="mt-4 space-y-2">
 
-      <label className="font-medium">
+      <label className="font-semibold text-lg">
         Ubicación principal para clientes
       </label>
 
@@ -845,10 +857,12 @@ if (
 
                       <div className="space-y-5 mt-4">
 
-                        {Object.entries(
-                          form.business_hours
-                        ).map(
-                          ([day, schedule]: any) => (
+                        {orderedDays.map((day) => {
+
+                          const schedule =
+                            form.business_hours[day]
+
+                          return (
 
                             <div
                               key={day}
@@ -958,8 +972,9 @@ if (
 
                             </div>
 
-                          )
-                        )}
+                           )
+
+})}
 
                       </div>
 
