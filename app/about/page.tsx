@@ -254,10 +254,26 @@ export default function SobreNosotrosPage() {
                     ¡Prepárate para el futuro de Tizayuca!
                   </h2>
                   <p className="text-muted-foreground text-lg leading-relaxed">
-                    🚀 Estamos construyendo nuevas funcionalidades para TizaCrea. Tu opinión puede ayudarnos a decidir qué desarrollar primero. 
-                    Déjanos tus sugerencias, comentarios o ideas en nuestro formulario de retroalimentación.
-                    💡 Queremos construir esta plataforma junto con la comunidad de Tizayuca. https://forms.gle/AAnE9f4hcgUEMtr87
-                    </p>
+  🚀 Estamos construyendo nuevas funcionalidades para TizaCrea.
+  Tu opinión puede ayudarnos a decidir qué desarrollar primero.
+
+  Déjanos tus sugerencias, comentarios o ideas en nuestro formulario
+  de retroalimentación.
+
+  💡 Queremos construir esta plataforma junto con la comunidad de Tizayuca.
+</p>
+
+<div className="mt-6">
+  <a
+    href="https://forms.gle/AAnE9f4hcgUEMtr87"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Button>
+      📝 Compartir opinión
+    </Button>
+  </a>
+</div>
                 </div>
               </div>
             </CardContent>
