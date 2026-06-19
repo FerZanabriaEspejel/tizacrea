@@ -257,6 +257,7 @@ export default function SobreNosotrosPage() {
                     🚀 Estamos construyendo nuevas funcionalidades para TizaCrea. Tu opinión puede ayudarnos a decidir qué desarrollar primero. 
                     Déjanos tus sugerencias, comentarios o ideas en nuestro formulario de retroalimentación.
                     💡 Queremos construir esta plataforma junto con la comunidad de Tizayuca. https://forms.gle/AAnE9f4hcgUEMtr87
+                    </p>
                 </div>
               </div>
             </CardContent>
