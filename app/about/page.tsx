@@ -254,8 +254,9 @@ export default function SobreNosotrosPage() {
                     ¡Prepárate para el futuro de Tizayuca!
                   </h2>
                   <p className="text-muted-foreground text-lg leading-relaxed">
-                    Pronto lanzaremos nuevas funcionalidades que potenciarán la experiencia comercial y social de Tizayuca. Si gustas ser parte, deja tus conmentarios en el forms.
-                  </p>
+                    🚀 Estamos construyendo nuevas funcionalidades para TizaCrea. Tu opinión puede ayudarnos a decidir qué desarrollar primero. 
+                    Déjanos tus sugerencias, comentarios o ideas en nuestro formulario de retroalimentación.
+                    💡 Queremos construir esta plataforma junto con la comunidad de Tizayuca. https://forms.gle/AAnE9f4hcgUEMtr87
                 </div>
               </div>
             </CardContent>
