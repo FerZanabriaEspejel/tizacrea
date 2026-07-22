@@ -4,12 +4,17 @@ import { useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+
 
 export default function RegisterPage() {
+const router = useRouter()
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
+const [email, setEmail] = useState("")
+const [password, setPassword] = useState("")
+
+const [loading, setLoading] = useState(false)
+const [redirecting, setRedirecting] = useState(false)
 
 async function handleRegister(e: React.FormEvent) {
 
@@ -72,8 +77,13 @@ async function handleRegister(e: React.FormEvent) {
     "Cuenta creada correctamente 🎉"
   )
 
-  setEmail("")
-  setPassword("")
+  setRedirecting(true)
+
+  setTimeout(() => {
+
+    router.push("/dashboard")
+
+  }, 1200)
 
 }
 
@@ -121,17 +131,28 @@ async function handleRegister(e: React.FormEvent) {
 
           <button
   type="submit"
-  disabled={loading}
+  disabled={loading || redirecting}
   className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 disabled:cursor-not-allowed text-white p-4 rounded-xl transition flex items-center justify-center gap-2"
 >
 
   {loading ? (
+
     <>
       <Loader2 className="h-5 w-5 animate-spin" />
       Creando cuenta...
     </>
+
+  ) : redirecting ? (
+
+    <>
+      <Loader2 className="h-5 w-5 animate-spin" />
+      Ingresando...
+    </>
+
   ) : (
+
     "Crear cuenta"
+
   )}
 
 </button>
