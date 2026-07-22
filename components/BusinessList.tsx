@@ -18,10 +18,162 @@ type Business = {
   lng?: number
   address: string
   phone: string
-  hours: string
+  business_hours?: Record<
+  string,
+  {
+    open: string
+    close: string
+    closed: boolean
+  }
+      >
   description: string
   facebook: string
   image_url?: string
+}
+
+const orderedDays = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+]
+
+const daysInSpanish: Record<string, string> = {
+  monday: "Lunes",
+  tuesday: "Martes",
+  wednesday: "Miércoles",
+  thursday: "Jueves",
+  friday: "Viernes",
+  saturday: "Sábado",
+  sunday: "Domingo",
+}
+
+function getOpenDays(
+  businessHours?: Record<
+    string,
+    {
+      open: string
+      close: string
+      closed: boolean
+    }
+  >
+) {
+
+  if (!businessHours)
+    return "Horario no disponible"
+
+  const openDays = orderedDays.filter(
+    (day) =>
+      businessHours[day] &&
+      !businessHours[day].closed
+  )
+
+  if (openDays.length === 0)
+    return "Horario no disponible"
+
+  if (openDays.length === 7)
+    return "Todos los días"
+
+  return `${daysInSpanish[openDays[0]]} a ${
+    daysInSpanish[
+      openDays[openDays.length - 1]
+    ]
+  }`
+
+}
+
+function isOpenNow(
+  businessHours?: Record<
+    string,
+    {
+      open: string
+      close: string
+      closed: boolean
+    }
+  >
+) {
+
+  if (!businessHours) return false
+
+  const days = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ]
+
+  const now = new Date()
+
+  const today = days[now.getDay()]
+
+  const schedule = businessHours[today]
+
+  if (!schedule) return false
+
+  if (schedule.closed) return false
+
+  const currentMinutes =
+    now.getHours() * 60 +
+    now.getMinutes()
+
+  const [openHour, openMinute] =
+    schedule.open.split(":").map(Number)
+
+  const [closeHour, closeMinute] =
+    schedule.close.split(":").map(Number)
+
+  const openMinutes =
+    openHour * 60 + openMinute
+
+  const closeMinutes =
+    closeHour * 60 + closeMinute
+
+  return (
+    currentMinutes >= openMinutes &&
+    currentMinutes <= closeMinutes
+  )
+
+}
+
+function getTodayHours(
+  businessHours?: Record<
+    string,
+    {
+      open: string
+      close: string
+      closed: boolean
+    }
+  >
+) {
+
+  if (!businessHours)
+    return "Sin horario"
+
+  const days = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ]
+
+  const today = days[new Date().getDay()]
+
+  const schedule = businessHours[today]
+
+  if (!schedule || schedule.closed)
+    return "Cerrado"
+
+  return `${schedule.open} - ${schedule.close}`
+
 }
 
 interface BusinessListProps {
@@ -215,29 +367,40 @@ export default function BusinessList({
 
                       <div className="flex items-center gap-2">
 
-                        <Phone className="h-4 w-4 text-primary" />
+  <Phone className="h-4 w-4 text-primary" />
 
-                        <span>
+  <span>
+    {business.phone || "Sin teléfono"}
+  </span>
 
-                          {business.phone ||
-                            "Sin teléfono"}
+</div>
 
-                        </span>
+<div className="grid grid-cols-3 items-center mt-3 text-sm gap-2">
 
-                      </div>
+  {/* Estado */}
+  <span
+    className={`font-semibold ${
+      isOpenNow(business.business_hours)
+        ? "text-green-600"
+        : "text-red-500"
+    }`}
+  >
+    {isOpenNow(business.business_hours)
+      ? "🟢 Abierto ahora"
+      : "🔴 Cerrado ahora"}
+  </span>
 
-                      <div className="flex items-center gap-2">
+  {/* Horario */}
+  <span className="text-center text-muted-foreground">
+    🕒 {getTodayHours(business.business_hours)}
+  </span>
 
-                        <Clock className="h-4 w-4 text-primary" />
+  {/* Días */}
+  <span className="text-right text-muted-foreground">
+    📅 {getOpenDays(business.business_hours)}
+  </span>
 
-                        <span>
-
-                          {business.hours ||
-                            "Horario no disponible"}
-
-                        </span>
-
-                      </div>
+</div>
 
                     </div>
 
