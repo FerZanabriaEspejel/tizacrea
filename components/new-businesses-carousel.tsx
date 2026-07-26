@@ -1,0 +1,111 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+
+import useEmblaCarousel from "embla-carousel-react"
+import Autoplay from "embla-carousel-autoplay"
+
+import { supabase } from "@/lib/supabase"
+
+type Business = {
+  id: number
+  name: string
+  category: string
+  colonia?: string
+  image_url?: string
+}
+
+export function NewBusinessesCarousel() {
+
+  const [businesses, setBusinesses] = useState<Business[]>([])
+
+  const [emblaRef] = useEmblaCarousel(
+    {
+      loop: true,
+      align: "start",
+    },
+    [
+      Autoplay({
+        delay: 4000,
+        stopOnInteraction: true,
+      }),
+    ]
+  )
+
+  useEffect(() => {
+
+    async function loadBusinesses() {
+
+      const { data } = await supabase
+        .from("businesses")
+        .select("id,name,category,colonia,image_url")
+        .order("created_at", {
+          ascending: false,
+        })
+        .limit(8)
+
+      if (data) {
+
+        setBusinesses(data)
+
+      }
+
+    }
+
+    loadBusinesses()
+
+  }, [])
+
+  return (
+
+    <section className="py-20">
+
+      <div className="container mx-auto px-4">
+
+        <div className="mb-10">
+
+          <h2 className="text-3xl font-bold">
+
+            🆕 Recién llegados a TizaCrea
+
+          </h2>
+
+          <p className="text-muted-foreground mt-2">
+
+            Descubre los negocios más nuevos registrados en la comunidad.
+
+          </p>
+
+        </div>
+
+        <div
+          className="overflow-hidden"
+          ref={emblaRef}
+        >
+
+          <div className="flex gap-6">
+
+            {businesses.map((business) => (
+
+              <div
+                key={business.id}
+                className="min-w-[320px]"
+              >
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  )
+
+}
