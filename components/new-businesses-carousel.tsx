@@ -63,16 +63,16 @@ export function NewBusinessesCarousel() {
 
     <section className="py-20">
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto max-w-6xl">
 
-        <div className="mb-10">
+        <div className="text-center mb-16">
 
-          <h2 className="text-3xl font-bold">
-            🆕 Recién llegados a TizaCrea
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
+            Recién llegados a TizaCrea
           </h2>
 
-          <p className="text-muted-foreground mt-2">
-            Descubre los negocios más nuevos registrados en la comunidad.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-pretty">
+            Descubre los negocios más nuevos registrados en la comunidad
           </p>
 
         </div>
