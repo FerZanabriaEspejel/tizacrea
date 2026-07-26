@@ -13,8 +13,8 @@ type Business = {
   id: number
   name: string
   category: string
-  colonia?: string
-  image_url?: string
+  address: string
+  image_url: string
 }
 
 export function NewBusinessesCarousel() {
@@ -34,29 +34,30 @@ export function NewBusinessesCarousel() {
     ]
   )
 
-  useEffect(() => {
+ useEffect(() => {
 
-    async function loadBusinesses() {
+  async function loadBusinesses() {
 
-      const { data } = await supabase
-        .from("businesses")
-        .select("id,name,category,colonia,image_url")
-        .order("created_at", {
-          ascending: false,
-        })
-        .limit(8)
+    const { data, error } = await supabase
+      .from("businesses")
+      .select("id,name,category,address,image_url")
+      .order("created_at", {
+        ascending: false,
+      })
+      .limit(8)
 
-      if (data) {
+    console.log("DATA:", data)
+    console.log("ERROR:", error)
 
-        setBusinesses(data)
-
-      }
-
+    if (data) {
+      setBusinesses(data)
     }
 
-    loadBusinesses()
+  }
 
-  }, [])
+  loadBusinesses()
+
+}, [])
 
   return (
 
