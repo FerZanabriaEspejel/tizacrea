@@ -34,30 +34,30 @@ export function NewBusinessesCarousel() {
     ]
   )
 
- useEffect(() => {
+  useEffect(() => {
 
-  async function loadBusinesses() {
+    async function loadBusinesses() {
 
-    const { data, error } = await supabase
-      .from("businesses")
-      .select("id,name,category,address,image_url")
-      .order("created_at", {
-        ascending: false,
-      })
-      .limit(8)
+      const { data, error } = await supabase
+        .from("businesses")
+        .select("id,name,category,address,image_url")
+        .order("created_at", {
+          ascending: false,
+        })
+        .limit(8)
 
-    console.log("DATA:", data)
-    console.log("ERROR:", error)
+      console.log("DATA:", data)
+      console.log("ERROR:", error)
 
-    if (data) {
-      setBusinesses(data)
+      if (data) {
+        setBusinesses(data)
+      }
+
     }
 
-  }
+    loadBusinesses()
 
-  loadBusinesses()
-
-}, [])
+  }, [])
 
   return (
 
@@ -68,15 +68,11 @@ export function NewBusinessesCarousel() {
         <div className="mb-10">
 
           <h2 className="text-3xl font-bold">
-
             🆕 Recién llegados a TizaCrea
-
           </h2>
 
           <p className="text-muted-foreground mt-2">
-
             Descubre los negocios más nuevos registrados en la comunidad.
-
           </p>
 
         </div>
@@ -90,12 +86,55 @@ export function NewBusinessesCarousel() {
 
             {businesses.map((business) => (
 
-              <div
+              <Link
                 key={business.id}
+                href={`/businesses/${business.id}`}
                 className="min-w-[320px]"
               >
 
-              </div>
+                <div className="bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border">
+
+                  <div className="relative h-52">
+
+                    <Image
+                      src={
+                        business.image_url ||
+                        "/placeholder.png"
+                      }
+                      alt={business.name}
+                      fill
+                      className="object-cover"
+                    />
+
+                  </div>
+
+                  <div className="p-5 space-y-2">
+
+                    <span className="inline-block bg-orange-100 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full">
+                      🆕 Nuevo
+                    </span>
+
+                    <h3 className="text-xl font-bold line-clamp-1">
+                      {business.name}
+                    </h3>
+
+                    <p className="text-sm text-primary font-medium">
+                      {business.category}
+                    </p>
+
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {business.address}
+                    </p>
+
+                    <button className="mt-3 w-full bg-primary text-white py-2 rounded-xl hover:opacity-90 transition">
+                      Ver negocio →
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </Link>
 
             ))}
 
